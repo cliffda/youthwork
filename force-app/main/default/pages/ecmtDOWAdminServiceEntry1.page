@@ -1,0 +1,31 @@
+<apex:page controller="ExpECM.ExpServiceEntryController" sidebar="false" tabStyle="ExpECM__Case_Record__c" lightningStylesheets="true" >
+<ExpECM:ExpPageVersion thePageVersion="13.0" theParentController="{!this}"/>
+<head>
+<apex:stylesheet value="{!URLFOR($Resource.ExpECM__ExpResources, styleSheet)}"/>
+<ExpECM:ExpHeader />
+</head>
+<div class="ExpECMLEX">
+<apex:form id="theForm">
+<ExpECM:ExpFormTitle text="{!selectedServiceActivityName} - {!clientSessionName}"/>
+<apex:pageBlock id="thePageBlock">
+<apex:pageMessages id="errors"/>
+
+<!-- **** Based off of ECM Configuration: DOW Admin Service Entry Configuration ****-->
+
+<!-- ***** Progress Note, page 1, order 1 ***** -->
+<ExpECM:ExpProgressNote theParentController="{!this}" csName="CompSettings-0248" willQueryForClientSession="true" allowDelete="true"/>
+
+<!-- ***** Child Object List, page 1, order 2 ***** -->
+<ExpECM:ExpChildObjectList theParentController="{!this}" csName="CompSettings-0322"/>
+
+<!-- ***** Child Object List, page 1, order 2 ***** -->
+<ExpECM:ExpChildObjectList theParentController="{!this}" csName="CompSettings-0353"/>
+
+<apex:pageBlockButtons >
+<ExpECM:ExpNavigationButton id="theButtons" theParentController="{!this}" thePageNum="1" postSaveRerender="theForm"/>
+</apex:pageBlockButtons>
+</apex:pageBlock>
+</apex:form>
+<apex:includeScript value="{!$Resource.ExpECM__ExpJavaScript}"/>
+</div>
+</apex:page>

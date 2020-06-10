@@ -1,0 +1,46 @@
+<apex:page controller="ExpECM.ExpIntakeController" sidebar="false" renderAs="{!renderAs}">
+<ExpECM:ExpPageVersion thePageVersion="12.0" theParentController="{!this}"/>
+<head>
+<apex:stylesheet value="{!URLFOR($Resource.ExpECM__ExpResources, styleSheet)}"/>
+<ExpECM:ExpHeader />
+</head>
+<div class="ExpECMLEX">
+<apex:form rendered="{!renderAsPdf}">
+<ExpECM:ExpPdfPageHeader dateRange="{!dateRange}" orgLogoUrl="{!URLFOR($Resource.ExpECM__ExpResources, 'ecm_logo_small.png')}" />
+<ExpECM:ExpPdfPageFooter />
+
+<!-- **** Based off of ECM Configuration: Starter Program PDF Face Sheet Configuration (ECMT) ****-->
+
+<!-- ***** Case Record, page 1, order 1 ***** -->
+<ExpECM:ExpCaseRecord theParentController="{!this}" csName="CompSettings-0025"/>
+
+<!-- ***** Contact, page 1, order 2 ***** -->
+<ExpECM:ExpContact theParentController="{!this}" csName="CompSettings-0026"/>
+
+<!-- ***** Case Record, page 1, order 3 ***** -->
+<ExpECM:ExpCaseRecord theParentController="{!this}" csName="CompSettings-0027"/>
+
+<!-- ***** Case Record, page 1, order 4 ***** -->
+<ExpECM:ExpCaseRecord theParentController="{!this}" csName="CompSettings-0028"/>
+
+<!-- ***** Contact, page 1, order 5 ***** -->
+<ExpECM:ExpContact theParentController="{!this}" csName="CompSettings-0029"/>
+
+<!-- ***** Client Household, page 1, order 6 ***** -->
+<ExpECM:ExpClientHousehold theParentController="{!this}" csName="CompSettings-0030"/>
+
+<!-- ***** Household Members, page 1, order 7 ***** -->
+<ExpECM:ExpHouseholdMembers theParentController="{!this}" csName="CompSettings-0031"/>
+
+<!-- ***** Contact, page 1, order 8 ***** -->
+<ExpECM:ExpContact theParentController="{!this}" csName="CompSettings-0032"/>
+
+<!-- ***** Child Object List, page 1, order 9 ***** -->
+<ExpECM:ExpChildObjectList theParentController="{!this}" csName="CompSettings-0033"/>
+
+<!-- ***** Child Object List, page 1, order 10 ***** -->
+<ExpECM:ExpChildObjectList theParentController="{!this}" csName="CompSettings-0034"/>
+
+</apex:form>
+</div>
+</apex:page>

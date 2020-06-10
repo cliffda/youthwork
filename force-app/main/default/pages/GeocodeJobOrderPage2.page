@@ -1,0 +1,11 @@
+<apex:page showHeader="false" sidebar="false" controller="GeocodeJobOrder_Controller" docType="html-5.0">
+     <ggo:GeocodeComponent recId="{!ExpECM__Job_Order__c.id}" recType="ExpECM__Job_Order__c"
+         street="BillingStreet__c" city="BillingCity__c" 
+         postalCode="BillingPostalCode__c" state="BillingState__c" 
+         country="BillingCountry__c" 
+         geoLoc="GeoLoc__c"  displayfields="ExpECM__Number_of_Unassigned_Positions__c" 
+         normStreet="Normalized_Street__c" normCity="Normalized_City__c" 
+         normPostalCode="Normalized_Postal_Code__c" normState="Normalized_State__c" 
+         normCountry="Normalized_Country__c"  
+         maxResults="50" nearbyDistance="10"/>
+ </apex:page>

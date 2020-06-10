@@ -1,0 +1,71 @@
+<apex:page controller="ExpECM.ExpIntakeController" sidebar="false" tabStyle="ExpECM__Intake__tab" lightningStylesheets="true" >
+<ExpECM:ExpPageVersion thePageVersion="13.0" theParentController="{!this}"/>
+<head>
+<apex:stylesheet value="{!URLFOR($Resource.ExpECM__ExpResources, styleSheet)}"/>
+<ExpECM:ExpHeader />
+</head>
+<div class="ExpECMLEX">
+<apex:form id="theForm">
+<ExpECM:ExpFormTitle text="{!selectedProgram['Name']} Intake"/>
+<apex:pageBlock id="thePageBlock">
+<apex:pageMessages id="errors"/>
+<ExpECM:ExpDuplicateList theController="{!baseController}"/>
+
+<!-- **** Based off of ECM Configuration: YAOP Work Experience Intake Configuration ****-->
+
+<!-- ***** Contact, page 1, order 1 ***** -->
+<ExpECM:ExpContact theParentController="{!this}" csName="CompSettings-0192"/>
+
+<!-- ***** Client Household, page 1, order 2 ***** -->
+<ExpECM:ExpClientHousehold theParentController="{!this}" csName="CompSettings-0193" suppressName="true"/>
+
+<!-- ***** Contact, page 1, order 3 ***** -->
+<ExpECM:ExpContact theParentController="{!this}" csName="CompSettings-0194"/>
+
+<!-- ***** Case Record, page 1, order 4 ***** -->
+<ExpECM:ExpCaseRecord theParentController="{!this}" csName="CompSettings-0195"/>
+
+<!-- ***** Case Record, page 1, order 5 ***** -->
+<ExpECM:ExpCaseRecord theParentController="{!this}" csName="CompSettings-0196"/>
+
+<!-- ***** Case Record, page 1, order 6 ***** -->
+<ExpECM:ExpCaseRecord theParentController="{!this}" csName="CompSettings-0197"/>
+
+<!-- ***** Case Record, page 1, order 7 ***** -->
+<ExpECM:ExpCaseRecord theParentController="{!this}" csName="CompSettings-0198"/>
+
+<!-- ***** Case Record, page 1, order 8 ***** -->
+<ExpECM:ExpCaseRecord theParentController="{!this}" csName="CompSettings-0199"/>
+
+<!-- ***** Case Record, page 1, order 9 ***** -->
+<ExpECM:ExpCaseRecord theParentController="{!this}" csName="CompSettings-0200"/>
+
+<!-- ***** Household Members, page 1, order 10 ***** -->
+<ExpECM:ExpHouseholdMembers theParentController="{!this}" csName="CompSettings-0201"/>
+
+<!-- ***** Contact, page 1, order 11 ***** -->
+<ExpECM:ExpContact theParentController="{!this}" csName="CompSettings-0202"/>
+
+<!-- ***** Child Object List, page 1, order 12 ***** -->
+<ExpECM:ExpChildObjectList theParentController="{!this}" csName="CompSettings-0203"/>
+
+<!-- ***** Child Object List, page 1, order 13 ***** -->
+<ExpECM:ExpChildObjectList theParentController="{!this}" csName="CompSettings-0204"/>
+
+<!-- ***** Child Object List, page 1, order 14 ***** -->
+<ExpECM:ExpChildObjectList theParentController="{!this}" csName="CompSettings-0205"/>
+
+<!-- ***** Child Object List, page 1, order 15 ***** -->
+<ExpECM:ExpChildObjectList theParentController="{!this}" csName="CompSettings-0206"/>
+
+<!-- ***** Case Record, page 1, order 16 ***** -->
+<ExpECM:ExpCaseRecord theParentController="{!this}" csName="CompSettings-0207"/>
+
+<apex:pageBlockButtons >
+<ExpECM:ExpNavigationButton id="theButtons" theParentController="{!this}" thePageNum="1" postSaveRerender="theForm"/>
+</apex:pageBlockButtons>
+</apex:pageBlock>
+</apex:form>
+<apex:includeScript value="{!$Resource.ExpECM__ExpJavaScript}"/>
+</div>
+</apex:page>

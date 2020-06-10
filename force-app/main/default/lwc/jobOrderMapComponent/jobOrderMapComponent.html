@@ -1,0 +1,20 @@
+<template>
+  <!-- <template if:true={jobOrderName}> -->
+        <lightning-card class="slds-is-relative">
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
+            </template>
+            <!-- https://developer.salesforce.com/docs/component-library/bundle/lightning-map -->
+            <lightning-map 
+                map-markers={mapMarkers}
+                markers-title={markersTitle}
+                selected-marker-value={selectedMarkerValue} 
+                center={mapCenter}
+                list-view={listViewSetting}
+                show-footer={showFooter}>
+            </lightning-map>
+        </lightning-card>
+        <!--
+    </template>
+-->
+</template>

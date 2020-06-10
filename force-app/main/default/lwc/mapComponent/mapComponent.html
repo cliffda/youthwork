@@ -1,0 +1,17 @@
+<template>
+    <template if:true={contactName}>
+        <lightning-card class="slds-is-relative">
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
+            </template>
+            <lightning-map 
+                map-markers={mapMarkers}
+                markers-title={markersTitle}
+                selected-marker-value={selectedMarkerValue} 
+                list-view={listViewSetting}
+                center={mapCenter}>
+            </lightning-map>
+        </lightning-card>
+    </template>
+
+</template>
