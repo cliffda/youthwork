@@ -1,10 +1,11 @@
+// Get some key LWC features 
 import { LightningElement, api, wire } from 'lwc';
 // Allows us to grab the record ID from the currently displayed Job Order record
 import { getRecord } from 'lightning/uiRecordApi';
 // Allows us to use the Toast pop-up message to display errors
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 // This allows us to call the specified Apex method
-import getNearbyContacts from '@salesforce/apex/JobOrderComponentController.getNearbyContacts2';
+import getNearbyContacts from '@salesforce/apex/JobOrderComponentController.getNearbyContacts';
 
 // These constants are used when pulling information from the current Job Order record
 const JOB_ORDER_NAME = 'ExpECM__Job_Order__c.Name';
@@ -20,22 +21,19 @@ const JOB_ORDER_LONGITUDE = 'ExpECM__Job_Order__c.BillingLongitude__c';
 const JOB_ORDER_FIELDS = [JOB_ORDER_NAME,JOB_ORDER_PROGRAM,JOB_ORDER_STREET,JOB_ORDER_CITY,JOB_ORDER_STATE,JOB_ORDER_POSTAL_CODE,JOB_ORDER_LATITUDE,JOB_ORDER_LONGITUDE,];
 
 export default class JobOrderMapComponent extends LightningElement {
-    // These two fields are set by the admin when configuring the Component via the Lightning App Builder
+    // These four fields are set by the admin when configuring the Component via the Lightning App Builder
     @api proximity;
     @api listVisibility;
     @api maxMatchCount;
     @api renderFooter;
 
     // Set up local variables
-    isRendered;
     jobOrderProgram;
     jobOrderName;
-    jobOrderAccount;
     jobOrderStreet;
     jobOrderCity;
     jobOrderState;
     jobOrderPostalCode;
-    //jobOrderCountry;
     jobOrderLatitude;
     jobOrderLongitude;
 
@@ -112,9 +110,9 @@ export default class JobOrderMapComponent extends LightningElement {
                     Street: caseRecord.Client_Mailing_Street__c,
                     City: caseRecord.Client_Mailing_City__c,
                     State: caseRecord.Client_Mailing_State__c,
-                    PostalCode: caseRecord.Client_Mailing_Zip__c
-                    //Latitude: contact.MailingLatitude,
-                    //Longitude: contact.MailingLongitude
+                    PostalCode: caseRecord.Client_Mailing_Zip__c,
+                    Latitude: caseRecord.Client_Mailing_Latitude__c,
+                    Longitude: caseRecord.Client_Mailing_Longitude__c
                 }
             };
         });

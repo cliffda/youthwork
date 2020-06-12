@@ -12,49 +12,13 @@ public with sharing class JobOrderComponentController {
         Integer maxMatchCount
         ) {
 
-        //Can't do <= operation on distance comparison so accomplishing same comparison by adding 1 to the value specified 
-        proximity++; 
-
-        String query =  'SELECT Name,Client_Full_Name__c, ' +
-        '       DISTANCE(ExpECM__Main_Client__r.MailingAddress, GEOLOCATION(' + jobOrderLatitude + ',' + jobOrderLongitude + '), \'mi\') Miles, ' +
-        '       Client_Mailing_Street__c,' +
-        '       Client_Mailing_City__c,' +
-        '       Client_Mailing_State__c,' +
-        '       Client_Mailing_Zip__c,' +
-        '       Client_Mailing_Latitude__c,' +
-        '       Client_Mailing_Longitude__c,' +
-        '       ExpECM__Status__c,' +
-        '       Travel_to_Training__c,' +
-        '       Barriers_to_program_success__c,' +
-        '       Education_Level__c ' +
-        'FROM   ExpECM__Case_Record__c ' +
-        'WHERE  ExpECM__Program__c = \'' + jobOrderProgram + '\' ' +
-        'AND    DISTANCE(ExpECM__Main_Client__r.MailingAddress, GEOLOCATION(' + jobOrderLatitude + ',' + jobOrderLongitude + '), \'mi\') < ' + proximity + ' ' +
-        'ORDER BY DISTANCE(ExpECM__Main_Client__r.MailingAddress, GEOLOCATION(' + jobOrderLatitude + ',' + jobOrderLongitude + '), \'mi\') ' +
-        'LIMIT ' + maxMatchCount;
-
-        System.debug(query);
-        System.debug('DBG: ' + (Database.query(query)));
-
-        return JSON.serialize(Database.query(query));
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static String getNearbyContacts2(
-        Integer proximity,
-        String jobOrderProgram,
-        Decimal jobOrderLatitude,
-        Decimal jobOrderLongitude,
-        Integer maxMatchCount
-        ) {
-
-        //Can't do Less Than/Equal operation on distance comparison so accomplishing same comparison by adding 1 to the value specified 
+        //Can't do Less Than/Equal operation on distance comparison so accomplishing similar comparison by adding 1 to the value specified 
         proximity++;             
 
-        // This is the list of Case Record information that we'll return to the Lightning Component
+        // This defines the list of Case Record information that we'll return to the Lightning Component
         List<Map<String,String>> retVal = new List<Map<String,String>>();
 
-        // Get a local variable that has the geolocation of the Job Order
+        // Set a local variable that has the geolocation of the Job Order
         Location jobOrderLocation = Location.newInstance(jobOrderLatitude,jobOrderLongitude);
 
         // Define list to receive the results of the SOQL query
@@ -102,11 +66,11 @@ public with sharing class JobOrderComponentController {
             caseRec.put('Client_Mailing_City__c', currentCaseRecord.Client_Mailing_City__c);
             caseRec.put('Client_Mailing_State__c', currentCaseRecord.Client_Mailing_State__c);
             caseRec.put('Client_Mailing_Zip__c', currentCaseRecord.Client_Mailing_Zip__c);
-            caseRec.put('Client_Mailing_Latitude__c', currentCaseRecord.Client_Mailing_Latitude__c.format());
+            caseRec.put('Client_Mailing_Latitude__c', currentCaseRecord.Client_Mailing_Latitude__c.format()); //format() converts numberic format to string
             caseRec.put('Client_Mailing_Longitude__c', currentCaseRecord.Client_Mailing_Longitude__c.format());
             caseRec.put('ExpECM__Status__c', currentCaseRecord.ExpECM__Status__c);
             caseRec.put('Travel_to_Training__c', currentCaseRecord.Travel_to_Training__c);
-            caseRec.put('Barriers_to_program_success__c', String.isBlank(currentCaseRecord.Barriers_to_program_success__c) ? '' : currentCaseRecord.Barriers_to_program_success__c);
+            caseRec.put('Barriers_to_program_success__c', String.isBlank(currentCaseRecord.Barriers_to_program_success__c) ? 'N/A' : currentCaseRecord.Barriers_to_program_success__c);
             caseRec.put('Education_Level__c', currentCaseRecord.Education_Level__c);
             caseRec.put('Distance', dist.format());
             

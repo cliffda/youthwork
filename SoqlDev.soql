@@ -1,0 +1,6 @@
+SELECT  name,
+DISTANCE(ExpECM__Main_Client__r.MailingAddress, GEOLOCATION(41.462444,-81.770591), 'mi') Miles,
+id
+FROM ExpECM__Case_Record__c
+where Client_Mailing_Latitude__c > 0
+and DISTANCE(ExpECM__Main_Client__r.MailingAddress, GEOLOCATION(41.462444,-81.770591), 'mi') < 1
