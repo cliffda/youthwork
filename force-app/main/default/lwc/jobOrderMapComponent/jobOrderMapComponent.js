@@ -103,6 +103,7 @@ export default class JobOrderMapComponent extends LightningElement {
     createMapMarkers(caseRecordData) {
         const newMarkers = caseRecordData.map(caseRecord => {
             return {
+                directions: `http://maps.google.com/maps?saddr=${caseRecord.Client_Mailing_Latitude__c}%2C${caseRecord.Client_Mailing_Longitude__c}&daddr=${this.jobOrderLatitude}%2C${this.jobOrderLongitude}&dirflg=r`, 
                 title: caseRecord.Name,
                 icon: 'standard:user',
                 description: `Distance: [${caseRecord.Distance} Miles], Travel to Training: [${caseRecord.Travel_to_Training__c}], Status: [${caseRecord.ExpECM__Status__c}],  Education Level: [${caseRecord.Education_Level__c}], Barriers to Success: [${caseRecord.Barriers_to_program_success__c}]`, 
@@ -112,7 +113,8 @@ export default class JobOrderMapComponent extends LightningElement {
                     State: caseRecord.Client_Mailing_State__c,
                     PostalCode: caseRecord.Client_Mailing_Zip__c,
                     Latitude: caseRecord.Client_Mailing_Latitude__c,
-                    Longitude: caseRecord.Client_Mailing_Longitude__c
+                    Longitude: caseRecord.Client_Mailing_Longitude__c,
+                    Client: caseRecord.Id
                 }
             };
         });

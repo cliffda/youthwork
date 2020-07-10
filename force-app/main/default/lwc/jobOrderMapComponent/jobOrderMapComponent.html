@@ -14,6 +14,15 @@
                 show-footer={showFooter}>
             </lightning-map>
         </lightning-card>
+        <lightning-card title="Click on link to open window with directions" icon-name="custom:custom31">
+            <ul class="slds-m-around_medium">
+                <template iterator:it={mapMarkers}>
+                    <li key={it.value.Client}>
+                        <p><lightning-formatted-url value={it.value.directions} tooltip="Open Directions" label={it.value.title} target="_new" ></lightning-formatted-url></p>
+                    </li>
+                </template>
+            </ul>
+        </lightning-card>
         <!--
     </template>
 -->

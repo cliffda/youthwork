@@ -25,7 +25,7 @@ public with sharing class JobOrderComponentController {
         List<ExpECM__Case_Record__c> caseRecordList = new List<ExpECM__Case_Record__c>();
 
         // Run the query
-        caseRecordList = [SELECT Name,
+        caseRecordList = [SELECT Id, Name,
                 Client_Mailing_Street__c,
                 Client_Mailing_City__c,
                 Client_Mailing_State__c,
