@@ -5,24 +5,29 @@
                 <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
             </template>
             <!-- https://developer.salesforce.com/docs/component-library/bundle/lightning-map -->
-            <lightning-map 
-                map-markers={mapMarkers}
-                markers-title={markersTitle}
-                selected-marker-value={selectedMarkerValue} 
-                center={mapCenter}
-                list-view={listViewSetting}
-                show-footer={showFooter}>
-            </lightning-map>
-        </lightning-card>
-        <lightning-card title="Click on link to open window with directions" icon-name="custom:custom31">
-            <ul class="slds-m-around_medium">
-                <template iterator:it={mapMarkers}>
-                    <li key={it.value.Client}>
-                        <p><lightning-formatted-url value={it.value.directions} tooltip="Open Directions" label={it.value.title} target="_new" ></lightning-formatted-url></p>
-                    </li>
-                </template>
-            </ul>
-        </lightning-card>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col">
+                    <lightning-map 
+                    map-markers={mapMarkers}
+                    markers-title={markersTitle}
+                    selected-marker-value={selectedMarkerValue} 
+                    center={mapCenter}
+                    list-view={listViewSetting}>
+                </lightning-map>              
+                </div>
+                <div class="slds-col">
+                    <lightning-card class="slds-card_boundary" title="Click on link to open window with mass transit directions" icon-name="custom:custom31">
+                        <ul class="slds-m-around_medium">
+                            <template iterator:it={mapMarkers}>
+                                <li key={it.value.Client}>
+                                    <p><lightning-formatted-url value={it.value.directions} tooltip="Open Directions" label={it.value.title} target="_new" ></lightning-formatted-url></p>
+                                </li>
+                            </template>
+                        </ul>
+                    </lightning-card>
+                </div>
+            </div>
+        </lightning-card>    
         <!--
     </template>
 -->

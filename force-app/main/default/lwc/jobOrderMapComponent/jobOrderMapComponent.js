@@ -103,18 +103,18 @@ export default class JobOrderMapComponent extends LightningElement {
     createMapMarkers(caseRecordData) {
         const newMarkers = caseRecordData.map(caseRecord => {
             return {
-                directions: `http://maps.google.com/maps?saddr=${caseRecord.Client_Mailing_Latitude__c}%2C${caseRecord.Client_Mailing_Longitude__c}&daddr=${this.jobOrderLatitude}%2C${this.jobOrderLongitude}&dirflg=r`, 
+                directions: encodeURI(`http://maps.google.com/maps?saddr=${caseRecord.Client_Mailing_Street__c},${caseRecord.Client_Mailing_City__c},${caseRecord.Client_Mailing_State__c},${caseRecord.Client_Mailing_Zip__c}&daddr=${this.jobOrderStreet},${this.jobOrderCity},${this.jobOrderState},${this.jobOrderPostalCode}&dirflg=r`), 
                 title: caseRecord.Name,
                 icon: 'standard:user',
                 description: `Distance: [${caseRecord.Distance} Miles], Travel to Training: [${caseRecord.Travel_to_Training__c}], Status: [${caseRecord.ExpECM__Status__c}],  Education Level: [${caseRecord.Education_Level__c}], Barriers to Success: [${caseRecord.Barriers_to_program_success__c}]`, 
+                Client: caseRecord.Id,
                 location: {
                     Street: caseRecord.Client_Mailing_Street__c,
                     City: caseRecord.Client_Mailing_City__c,
                     State: caseRecord.Client_Mailing_State__c,
                     PostalCode: caseRecord.Client_Mailing_Zip__c,
                     Latitude: caseRecord.Client_Mailing_Latitude__c,
-                    Longitude: caseRecord.Client_Mailing_Longitude__c,
-                    Client: caseRecord.Id
+                    Longitude: caseRecord.Client_Mailing_Longitude__c
                 }
             };
         });
@@ -124,22 +124,22 @@ export default class JobOrderMapComponent extends LightningElement {
             value: 'JobOrder',
             title: this.jobOrderName,
             location: {
+                Street: this.jobOrderStreet,
                 City: this.jobOrderCity,
-                Country: this.jobOrderCountry,
-                PostalCode: this.jobOrderPostalCode,
                 State: this.jobOrderState,
-                Street: this.jobOrderStreet
+                PostalCode: this.jobOrderPostalCode,
+                Country: this.jobOrderCountry
             }
         });
 
         // Setting the attribute on the map component to control how the map display is centered
         this.mapCenter = {
             location: { 
+                Street: this.jobOrderStreet,
                 City: this.jobOrderCity,
-                Country: this.jobOrderCountry,
-                PostalCode: this.jobOrderPostalCode,
                 State: this.jobOrderState,
-                Street: this.jobOrderStreet
+                PostalCode: this.jobOrderPostalCode,
+                Country: this.jobOrderCountry
             }
         };
 
