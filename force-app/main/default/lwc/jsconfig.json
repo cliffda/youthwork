@@ -3,11 +3,11 @@
         "experimentalDecorators": true,
         "baseUrl": ".",
         "paths": {
-            "c/mapComponent": [
-                "mapComponent/mapComponent.js"
-            ],
             "c/jobOrderMapComponent": [
                 "jobOrderMapComponent/jobOrderMapComponent.js"
+            ],
+            "c/caseRecordMapComponent": [
+                "caseRecordMapComponent/caseRecordMapComponent.js"
             ]
         }
     },
