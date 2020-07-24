@@ -3,14 +3,14 @@
     <apiVersion>48.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>Case Record Map</masterLabel>
-    <description>This map will show all eligible contacts near the Job Order location</description>
+    <description>This map will show all eligible contacts near the Case Record location</description>
     <targets>
         <target>lightning__RecordPage</target>
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
             <objects>
-                <object>ExpECM__Job_Order__c</object>
+                <object>ExpECM__Case_Record__c</object>
             </objects>
             <property label="Proximity" type="Integer" name="proximity" default="5" description="Contact proximity radius, in miles"/>
             <property label="Max # of Matches" type="Integer"  name="maxMatchCount" default="10" description="The maximum number of matches to return"/>

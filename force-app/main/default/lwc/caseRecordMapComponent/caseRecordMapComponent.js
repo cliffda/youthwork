@@ -5,20 +5,20 @@ import { getRecord } from 'lightning/uiRecordApi';
 // Allows us to use the Toast pop-up message to display errors
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 // This allows us to call the specified Apex method
-import getNearbyContacts from '@salesforce/apex/commonMapComponentController.getNearbyContacts';
+import getNearbyJobOrders from '@salesforce/apex/commonMapComponentController.getNearbyJobOrders';
 
-// These constants are used when pulling information from the current Job Order record
-const JOB_ORDER_NAME = 'ExpECM__Job_Order__c.Name';
-const JOB_ORDER_PROGRAM = 'ExpECM__Job_Order__c.Program__c';
-const JOB_ORDER_STREET = 'ExpECM__Job_Order__c.BillingStreet__c';
-const JOB_ORDER_CITY = 'ExpECM__Job_Order__c.BillingCity__c';
-const JOB_ORDER_STATE = 'ExpECM__Job_Order__c.BillingState__c';
-const JOB_ORDER_POSTAL_CODE = 'ExpECM__Job_Order__c.BillingPostalCode__c';
-const JOB_ORDER_LATITUDE = 'ExpECM__Job_Order__c.BillingLatitude__c';
-const JOB_ORDER_LONGITUDE = 'ExpECM__Job_Order__c.BillingLongitude__c';
+// These constants are used when pulling information from the current Case record
+const CASE_RECORD_NAME = 'ExpECM__Case_Record__c.Name';
+const CASE_RECORD_PROGRAM = 'ExpECM__Case_Record__c.ExpECM__Program__c';
+const CASE_RECORD_STREET = 'ExpECM__Case_Record__c.Client_Mailing_Street__c';
+const CASE_RECORD_CITY = 'ExpECM__Case_Record__c.Client_Mailing_City__c';
+const CASE_RECORD_STATE = 'ExpECM__Case_Record__c.Client_Mailing_State__c';
+const CASE_RECORD_POSTAL_CODE = 'ExpECM__Case_Record__c.Client_Mailing_Zip__c';
+const CASE_RECORD_LATITUDE = 'ExpECM__Case_Record__c.Client_Mailing_Latitude__c';
+const CASE_RECORD_LONGITUDE = 'ExpECM__Case_Record__c.Client_Mailing_Longitude__c';
 
 // Create an array of the fields we want to retrieve
-const JOB_ORDER_FIELDS = [JOB_ORDER_NAME,JOB_ORDER_PROGRAM,JOB_ORDER_STREET,JOB_ORDER_CITY,JOB_ORDER_STATE,JOB_ORDER_POSTAL_CODE,JOB_ORDER_LATITUDE,JOB_ORDER_LONGITUDE,];
+const CASE_RECORD_FIELDS = [CASE_RECORD_NAME,CASE_RECORD_PROGRAM,CASE_RECORD_STREET,CASE_RECORD_CITY,CASE_RECORD_STATE,CASE_RECORD_POSTAL_CODE,CASE_RECORD_LATITUDE,CASE_RECORD_LONGITUDE,];
 
 export default class CaseRecordMapComponent extends LightningElement {
     // These four fields are set by the admin when configuring the Component via the Lightning App Builder
@@ -28,14 +28,14 @@ export default class CaseRecordMapComponent extends LightningElement {
     @api renderFooter;
 
     // Set up local variables
-    jobOrderProgram;
-    jobOrderName;
-    jobOrderStreet;
-    jobOrderCity;
-    jobOrderState;
-    jobOrderPostalCode;
-    jobOrderLatitude;
-    jobOrderLongitude;
+    caseRecordProgram;
+    caseRecordName;
+    caseRecordStreet;
+    caseRecordCity;
+    caseRecordState;
+    caseRecordPostalCode;
+    jcaseRecordLatitude;
+    caseRecordLongitude;
 
     mapMarkers = [];
     mapCenter;
@@ -51,46 +51,46 @@ export default class CaseRecordMapComponent extends LightningElement {
 
     // Pull in values from the currently displayed record using the recordId we just set
     // The data is pulled without having to make a database call
-    @wire(getRecord, { recordId: '$recordId', fields: JOB_ORDER_FIELDS })
+    @wire(getRecord, { recordId: '$recordId', fields: CASE_RECORD_FIELDS })
     loadRecord({ error, data }) {
         // Error handling
         if (data) {
             this.error = undefined;
-            this.jobOrderProgram = data.fields.Program__c.value;
-            this.jobOrderName = data.fields.Name.value;
-            this.jobOrderStreet = data.fields.BillingStreet__c.value;
-            this.jobOrderCity = data.fields.BillingCity__c.value;
-            this.jobOrderState = data.fields.BillingState__c.value;
-            this.jobOrderPostalCode = data.fields.BillingPostalCode__c.value;
-            this.jobOrderLatitude = data.fields.BillingLatitude__c.value;
-            this.jobOrderLongitude = data.fields.BillingLongitude__c.value;
+            this.caseRecordProgram = data.fields.ExpECM__Program__c.value;
+            this.caseRecordName = data.fields.Name.value;
+            this.caseRecordStreet = data.fields.Client_Mailing_Street__c.value;
+            this.caseRecordCity = data.fields.Client_Mailing_City__c.value;
+            this.caseRecordState = data.fields.Client_Mailing_State__c.value;
+            this.caseRecordPostalCode = data.fields.Client_Mailing_Zip__c.value;
+            this.caseRecordLatitude = data.fields.Client_Mailing_Latitude__c.value;
+            this.caseRecordLongitude = data.fields.Client_Mailing_Longitude__c.value;
         } else if (error) {
             this.error = error;
-            this.jobOrderName = undefined;
+            this.caseRecordName = undefined;
             this.mapMarkers = [];
         }
     }
 
     // This calls the Apex method JobOrderComponentController.getNearbyContacts, passing in parameters
-    @wire(getNearbyContacts, {
+    @wire(getNearbyJobOrders, {
         proximity: '$proximity',
-        jobOrderProgram: '$jobOrderProgram',
-        jobOrderLatitude: '$jobOrderLatitude',
-        jobOrderLongitude: '$jobOrderLongitude',
+        caseRecordProgram: '$caseRecordProgram',
+        caseRecordLatitude: '$caseRecordLatitude',
+        caseRecordLongitude: '$caseRecordLongitude',
         maxMatchCount: '$maxMatchCount'
     })
     // This method is called when the above @wire function completes
     // The Apex method above returns the results of a SOQL survey.
     // This method will parse the results and call a method to create a 
     // set of map markers that will be passed to the actual map component
-    wiredCaseRecordsJSON({ error, data }) {
+    wiredJobOrdersJSON({ error, data }) {
         if (data) {
             this.createMapMarkers(JSON.parse(data));
         } else if (error) {
             this.isLoading = false;
             this.dispatchEvent(
                 new ShowToastEvent({
-                    title: 'Error loading Case Records Near Job',
+                    title: 'Error loading Job Orders Near Case Record',
                     message: error.message,
                     variant: 'error'
                 })
@@ -100,52 +100,50 @@ export default class CaseRecordMapComponent extends LightningElement {
 
     // This is the method that will construct the map/array (https://www.w3schools.com/jsref/jsref_map.asp) that contains
     // the map point attributes
-    createMapMarkers(caseRecordData) {
-        const newMarkers = caseRecordData.map(caseRecord => {
+    createMapMarkers(jobOrderData) {
+        const newMarkers = jobOrderData.map(jobOrder => {
             return {
-                directions: encodeURI(`http://maps.google.com/maps?saddr=${caseRecord.Client_Mailing_Street__c},${caseRecord.Client_Mailing_City__c},${caseRecord.Client_Mailing_State__c},${caseRecord.Client_Mailing_Zip__c}&daddr=${this.jobOrderStreet},${this.jobOrderCity},${this.jobOrderState},${this.jobOrderPostalCode}&dirflg=r`), 
-                title: caseRecord.Name,
+                directions: encodeURI(`http://maps.google.com/maps?saddr=${jobOrder.BillingStreet__c},${jobOrder.BillingCity__c},${jobOrder.BillingState__c},${jobOrder.BillingPostalCode__c}&daddr=${this.caseRecordStreet},${this.caseRecordCity},${this.caseRecordState},${this.caseRecordPostalCode}&dirflg=r`), 
+                title: jobOrder.Name,
                 icon: 'standard:user',
-                description: `Distance: [${caseRecord.Distance} Miles], Travel to Training: [${caseRecord.Travel_to_Training__c}], Status: [${caseRecord.ExpECM__Status__c}],  Education Level: [${caseRecord.Education_Level__c}], Barriers to Success: [${caseRecord.Barriers_to_program_success__c}]`, 
-                Client: caseRecord.Id,
+                description: `Distance: [${jobOrder.Distance} Miles]]`, 
+                Client: jobOrder.Id,
                 location: {
-                    Street: caseRecord.Client_Mailing_Street__c,
-                    City: caseRecord.Client_Mailing_City__c,
-                    State: caseRecord.Client_Mailing_State__c,
-                    PostalCode: caseRecord.Client_Mailing_Zip__c,
-                    Latitude: caseRecord.Client_Mailing_Latitude__c,
-                    Longitude: caseRecord.Client_Mailing_Longitude__c
+                    Street: jobOrder.BillingStreet__c,
+                    City: jobOrder.BillingCity__c,
+                    State: jobOrder.BillingState__c,
+                    PostalCode: jobOrder.BillingPostalCode__c,
+                    Latitude: jobOrder.BillingLatitude__c,
+                    Longitude: jobOrder.BillingLongitude__c
                 }
             };
         });
         // Insert a new entry at the beginning of the map/array that contains the Job Order.
         // This ensures that the Job Order is the first entry in the list that displays next to the actual map
         newMarkers.unshift({
-            value: 'JobOrder',
-            title: this.jobOrderName,
+            value: 'CaseRecord',
+            title: this.caseRecordName,
             location: {
-                Street: this.jobOrderStreet,
-                City: this.jobOrderCity,
-                State: this.jobOrderState,
-                PostalCode: this.jobOrderPostalCode,
-                Country: this.jobOrderCountry
+                Street: this.caseRecordStreet,
+                City: this.caseRecordCity,
+                State: this.caseRecordState,
+                PostalCode: this.caseRecordPostalCode
             }
         });
 
         // Setting the attribute on the map component to control how the map display is centered
         this.mapCenter = {
             location: { 
-                Street: this.jobOrderStreet,
-                City: this.jobOrderCity,
-                State: this.jobOrderState,
-                PostalCode: this.jobOrderPostalCode,
-                Country: this.jobOrderCountry
+                Street: this.caseRecordStreet,
+                City: this.caseRecordCity,
+                State: this.caseRecordState,
+                PostalCode: this.caseRecordPostalCode
             }
         };
 
         // Set some additional atributes of the map Component
-        this.markersTitle = 'Location & Available Contacts';
-        this.selectedMarkerValue = 'JobOrder';
+        this.markersTitle = 'Location & Available Job Orders';
+        this.selectedMarkerValue = 'CaseRecord';
         this.mapMarkers = newMarkers;
         this.listViewSetting = this.listVisibility;
         this.isLoading = false;
