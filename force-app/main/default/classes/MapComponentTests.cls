@@ -3,7 +3,7 @@
 // all the validation rules, necessaryrelated records, and the geocoding reqirement.
 private class MapComponentTests {
     @IsTest
-    static void jobOrderComponentControllerTest(){
+    static void getNearbyContacts(){
         // Set a Job Order to use for the test.  If the test is failing it's likely due to this record.
         // When running the test make sure the id is for an existing job record that has matching
         // Case Records.
@@ -15,7 +15,7 @@ private class MapComponentTests {
                                         where id = :jobOrderId];
         System.debug('Job Order='+ jobOrder);
 
-        String testResult = JobOrderComponentController.getNearbyContacts(10, 
+        String testResult = commonMapComponentController.getNearbyContacts(10, 
                                                         jobOrder.Program__c, 
                                                         jobOrder.BillingLatitude__c, 
                                                         jobOrder.BillingLongitude__c, 

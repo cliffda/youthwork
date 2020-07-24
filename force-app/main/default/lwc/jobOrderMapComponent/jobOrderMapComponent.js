@@ -5,7 +5,7 @@ import { getRecord } from 'lightning/uiRecordApi';
 // Allows us to use the Toast pop-up message to display errors
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 // This allows us to call the specified Apex method
-import getNearbyContacts from '@salesforce/apex/JobOrderComponentController.getNearbyContacts';
+import getNearbyContacts from '@salesforce/apex/commonMapComponentController.getNearbyContacts';
 
 // These constants are used when pulling information from the current Job Order record
 const JOB_ORDER_NAME = 'ExpECM__Job_Order__c.Name';

@@ -1,7 +1,6 @@
-public with sharing class JobOrderComponentController {
-    public JobOrderComponentController() {
-
-    }
+public with sharing class commonMapComponentController {
+    //public commonMapComponentController() {
+    //}
 
     @AuraEnabled(cacheable=true)
     public static String getNearbyContacts(
@@ -85,4 +84,5 @@ public with sharing class JobOrderComponentController {
         //Return the list of matching Case Records in JSON format
         return JSON.serialize(retVal);
     }
+
 }
