@@ -110,8 +110,25 @@ public with sharing class commonMapComponentController {
         List<ExpECM__Job_Order__c> jobOrderList = new List<ExpECM__Job_Order__c>();
 
         // Run the query
+/*
+
+            * Job Title
+
+
+
+
+
+*/
         jobOrderList = [SELECT Id,
                 Name,
+                ExpECM__Organization__r.Name,
+                Job_Title__c,
+                Start_Date_Time__c,
+                Special_Requests__c,	
+                Special_Requirements__c,
+                Duties_Skills__c,
+                ExpECM__Number_of_Positions__c,
+                ExpECM__Number_of_Assigned_Positions__c,
                 BillingStreet__c,
                 BillingCity__c,
                 BillingState__c,
@@ -162,7 +179,15 @@ public with sharing class commonMapComponentController {
             dist = dist / 10;
 
             // Load the map with data
-            jobRec.put('Name', currentJobProgramRecord.Name);
+            jobRec.put('Name', currentJobProgramRecord.Name) ; 
+            jobRec.put('OrganizationName', currentJobProgramRecord.ExpECM__Organization__r.Name) ; 
+            jobRec.put('Job_Title__c', currentJobProgramRecord.Job_Title__c) ; 
+            jobRec.put('Start_Date_Time__c', currentJobProgramRecord.Start_Date_Time__c.format()) ; 
+            jobRec.put('Special_Requests__c', currentJobProgramRecord.Special_Requests__c) ; 
+            jobRec.put('Special_Requirements__c', currentJobProgramRecord.Special_Requirements__c) ; 
+            jobRec.put('Duties_Skills__c', currentJobProgramRecord.Duties_Skills__c) ; 
+            jobRec.put('ExpECM__Number_of_Positions__c', currentJobProgramRecord.ExpECM__Number_of_Positions__c.format()) ; 
+            jobRec.put('ExpECM__Number_of_Assigned_Positions__c', currentJobProgramRecord.ExpECM__Number_of_Assigned_Positions__c.format()) ; 
             jobRec.put('BillingStreet__c', currentJobProgramRecord.BillingStreet__c);
             jobRec.put('BillingCity__c', currentJobProgramRecord.BillingCity__c);
             jobRec.put('BillingState__c', currentJobProgramRecord.BillingState__c);

@@ -41,9 +41,12 @@ export default class CaseRecordMapComponent extends LightningElement {
     mapCenter;
     markersTitle;
     selectedMarkerValue;
+    jobToDisplay;
     listViewSetting;
-    showFooter;
+    showFooter = false;
     isLoading = true;
+    jobDetails = new Map();
+    index = 0;
 
     // This uses the built-in ability to capture the record ID from the currently displayed record
     // In this case, it's the ID of the Job Order record.
@@ -100,13 +103,24 @@ export default class CaseRecordMapComponent extends LightningElement {
 
     // This is the method that will construct the map/array (https://www.w3schools.com/jsref/jsref_map.asp) that contains
     // the map point attributes
+    // Documentation for building the Google Maps URL to show directions can be found here https://www.erichstauffer.com/technology/google-maps-query-string-parameters
     createMapMarkers(jobOrderData) {
         const newMarkers = jobOrderData.map(jobOrder => {
             return {
                 directions: encodeURI(`http://maps.google.com/maps?saddr=${jobOrder.BillingStreet__c},${jobOrder.BillingCity__c},${jobOrder.BillingState__c},${jobOrder.BillingPostalCode__c}&daddr=${this.caseRecordStreet},${this.caseRecordCity},${this.caseRecordState},${this.caseRecordPostalCode}&dirflg=r`), 
                 title: jobOrder.Name,
                 icon: 'standard:user',
-                description: `Distance: [${jobOrder.Distance} Miles]]`, 
+                description: `Organization: ${jobOrder.OrganizationName}`, 
+                organization: jobOrder.OrganizationName,
+                distance: jobOrder.Distance,
+                jobTitle: jobOrder.Job_Title__c,
+                startDate: jobOrder.Start_Date_Time__c,
+                specialRequests: jobOrder.Special_Requests__c,
+                specialRequirements: jobOrder.Special_Requirements__c,
+                dutiesSkills: jobOrder.Duties_Skills__c,
+                numOfPositions: jobOrder.ExpECM__Number_of_Positions__c,
+                numOfAssigned: jobOrder.ExpECM__Number_of_Assigned_Positions__c,     
+                value: jobOrder.Name,
                 Client: jobOrder.Id,
                 location: {
                     Street: jobOrder.BillingStreet__c,
@@ -147,6 +161,47 @@ export default class CaseRecordMapComponent extends LightningElement {
         this.mapMarkers = newMarkers;
         this.listViewSetting = this.listVisibility;
         this.isLoading = false;
-        this.showFooter = this.renderFooter;
+
+        this.index = 0;
+        while (this.index < this.mapMarkers.length) { 
+            this.jobDetails.set(this.mapMarkers[this.index].value, this.mapMarkers[this.index]);
+            this.index++; 
+        }
+        
+        console.log('CaseRecordMapComponent.js Completed load DEBUG: ' + this.markersTitle);
     }
+
+    handleMarkerSelect(event) {
+        this.selectedMarkerValue = event.detail.selectedMarkerValue;
+        console.log('CaseRecordMapComponent.js selectedMarkerValue: ' + this.selectedMarkerValue);
+        this.jobToDisplay = this.jobDetails.get(this.selectedMarkerValue);
+        this.showFooter = true;
+    }
+
+    badgeSelected(event) {
+        console.log('CaseRecordMapComponent.js badgeSelected' + event);
+        const recId = event.detail.recId;
+        const action = event.detail.action;
+
+        switch(action) {
+            case 'nba':
+                {
+                    console.log('isvConsoleMap.js message' + message);
+                    break;
+                }
+            case 'NavToRecord':
+                //
+              break;
+            case 'ConvertLead':
+                //
+            break;
+            case 'NotifySales':
+                //
+            break;
+            default:
+              // code block
+          }
+
+    }
+
 }
