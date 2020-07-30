@@ -4,9 +4,12 @@
         <template if:true={isLoading}>
             <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
         </template>
-        <!-- https://developer.salesforce.com/docs/component-library/bundle/lightning-map -->
         <div class="slds-grid slds-wrap">
-            <div class="slds-col">
+            <!-- 
+                Map Section 
+            -->
+            <div class="slds-col slds-size_1-of-2">
+                <!-- https://developer.salesforce.com/docs/component-library/bundle/lightning-map -->
                 <lightning-map 
                     map-markers={mapMarkers} 
                     markers-title={markersTitle} 
@@ -16,149 +19,159 @@
                     list-view={listViewSetting}>
                 </lightning-map>
             </div>
+            <!-- 
+               Job Detail Section 
+            -->
+            <div class="slds-col slds-size_1-of-2">
+                <template if:true={showFooter}>
+                    <article class="slds-card">
+                        <!-- 
+                            HEADER
+                        -->
+                        <div class="slds-card__header slds-grid">
+                            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                <div class="slds-media__figure">
+                                    <lightning-icon icon-name="custom:custom85" title="custom88"></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h2 class="slds-card__header-title">
+                                        <lightning-button variant="base" label={selectedMarkerValue} title="Open Job Order Record" onclick={navigateToJobOrder} class="slds-card__header-link slds-truncate"></lightning-button>
+                                    </h2>
+                                </div>
+                                <div class="slds-no-flex">
+                                    <lightning-button variant="brand" label="Create Job Placement" title="Click to Create Job Placement" onclick={createPlacement} class="slds-m-left_x-small"></lightning-button>
+                                </div>
+                            </header>
+                        </div>
+                        <!--
+                            JOB ORDER DETAILS
+                        -->
+                        <div class="slds-card__body slds-card__body_inner">
+                            <!-- Row 1 -->
+                            <div class="slds-form__row">
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Organization</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">{jobToDisplay.organization}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Distance</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">{jobToDisplay.distance} miles</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Row 2 -->
+                            <div class="slds-form__row">
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Job Title</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">{jobToDisplay.jobTitle}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Directions</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">
+                                                <lightning-formatted-url value={jobToDisplay.directions} tooltip="Open Directions"
+                                                    label="Open Google Map mass-transit directions in new tab" target="_new">
+                                                </lightning-formatted-url>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                            <!-- Row 3 -->
+                            <div class="slds-form__row">
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Start Date</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">{jobToDisplay.startDate}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Special Requests</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">
+                                                <div class="slds-form-element__static">{jobToDisplay.specialRequests}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                            <!-- Row 4 -->
+                            <div class="slds-form__row">
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Duties/Skills</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">
+                                                <lightning-formatted-rich-text value={jobToDisplay.dutiesSkills}></lightning-formatted-rich-text>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Row 5 -->
+                            <div class="slds-form__row">                            
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Special Requirements</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">
+                                                <div class="slds-form-element__static">{jobToDisplay.specialRequirements}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                            <!-- Row 6 -->
+                            <div class="slds-form__row">
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Number of Positions</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">{jobToDisplay.numOfPositions}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Number of Assigned Positions</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">
+                                                <div class="slds-form-element__static">{jobToDisplay.numOfAssigned}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                  
+                            <!-- End of Rows -->
+                        </div>
+                    </article>
+                </template>
+            </div>
         </div>
     </lightning-card>
-    <template if:true={showFooter}>
-        <article class="slds-card">
-            <div class="slds-card__header slds-grid">
-                <header class="slds-media slds-media_center slds-has-flexi-truncate">
-                    <div class="slds-media__figure">
-                        <span class="slds-icon_container slds-icon-custom-custom85" title="job order details">
-                            <svg class="slds-icon slds-icon_small" aria-hidden="true">
-                                <use xlink:href="/assets/icons/custom-sprite/svg/symbols.svg#custom85"></use>
-                            </svg>
-                        </span>
-                    </div>
-                    <div class="slds-media__body">
-                        <h2 class="slds-card__header-title">
-                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
-                                title="Job Order">
-                                <span>{selectedMarkerValue}</span>
-                            </a>
-                        </h2>
-                    </div>
-                </header>
-            </div>
-            <div class="slds-card__body slds-card__body_inner">
-                <!-- Row 1 -->
-                <div class="slds-form__row">
-                    <div class="slds-form__item" role="listitem">
-                        <div
-                            class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                            <span class="slds-form-element__label">Organization</span>
-                            <div class="slds-form-element__control">
-                                <div class="slds-form-element__static">{jobToDisplay.organization}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slds-form__item" role="listitem">
-                        <div
-                            class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                            <span class="slds-form-element__label">Distance</span>
-                            <div class="slds-form-element__control">
-                                <div class="slds-form-element__static">{jobToDisplay.distance} miles</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Row 2 -->
-                <div class="slds-form__row">
-                    <div class="slds-form__item" role="listitem">
-                        <div
-                            class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                            <span class="slds-form-element__label">Job Title</span>
-                            <div class="slds-form-element__control">
-                                <div class="slds-form-element__static">{jobToDisplay.jobTitle}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slds-form__item" role="listitem">
-                        <div
-                            class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                            <span class="slds-form-element__label">Directions</span>
-                            <div class="slds-form-element__control">
-                                <div class="slds-form-element__static">
-                                    <lightning-formatted-url value={jobToDisplay.directions} tooltip="Open Directions"
-                                        label="Open window with mass-transit directions" target="_new">
-                                    </lightning-formatted-url>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>                            
-                <!-- Row 3 -->
-                <div class="slds-form__row">
-                    <div class="slds-form__item" role="listitem">
-                        <div
-                            class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                            <span class="slds-form-element__label">Start Date</span>
-                            <div class="slds-form-element__control">
-                                <div class="slds-form-element__static">{jobToDisplay.startDate}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slds-form__item" role="listitem">
-                        <div
-                            class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                            <span class="slds-form-element__label">Special Requests</span>
-                            <div class="slds-form-element__control">
-                                <div class="slds-form-element__static">
-                                    <div class="slds-form-element__static">{jobToDisplay.specialRequests}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>                            
-                <!-- Row 4 -->
-                <div class="slds-form__row">
-                    <div class="slds-form__item" role="listitem">
-                        <div
-                            class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                            <span class="slds-form-element__label">Duties/Skills</span>
-                            <div class="slds-form-element__control">
-                                <div class="slds-form-element__static">{jobToDisplay.dutiesSkills}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slds-form__item" role="listitem">
-                        <div
-                            class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                            <span class="slds-form-element__label">Special Requirements</span>
-                            <div class="slds-form-element__control">
-                                <div class="slds-form-element__static">
-                                    <div class="slds-form-element__static">{jobToDisplay.specialRequirements}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>                            
-                <!-- Row 5 -->
-                <div class="slds-form__row">
-                    <div class="slds-form__item" role="listitem">
-                        <div
-                            class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                            <span class="slds-form-element__label">Number of Positions</span>
-                            <div class="slds-form-element__control">
-                                <div class="slds-form-element__static">{jobToDisplay.numOfPositions}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="slds-form__item" role="listitem">
-                        <div
-                            class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                            <span class="slds-form-element__label">Number of Positions Filled</span>
-                            <div class="slds-form-element__control">
-                                <div class="slds-form-element__static">
-                                    <div class="slds-form-element__static">{jobToDisplay.numOfAssigned}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>                  <!-- End of Rows -->
-            </div>
-        </article>
-    </template>
-    <!--
-      </template>
-  -->
 </template>

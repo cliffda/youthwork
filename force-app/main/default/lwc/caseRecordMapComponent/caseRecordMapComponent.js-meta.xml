@@ -15,7 +15,6 @@
             <property label="Proximity" type="Integer" name="proximity" default="5" description="Contact proximity radius, in miles"/>
             <property label="Max # of Matches" type="Integer"  name="maxMatchCount" default="10" description="The maximum number of matches to return"/>
             <property label="List Visibility" name="listVisibility" type="String" datasource="hidden,visible" description="Visibility setting for list of map points" />
-            <property label="Show link to Google Map" name="renderFooter" type="String" datasource="true,false" description="If true, the footer shows an 'Open in Google Maps' link that opens an external window to display the selected marker location in Google Maps." />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

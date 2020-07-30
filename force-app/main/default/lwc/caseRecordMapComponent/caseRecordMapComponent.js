@@ -6,6 +6,10 @@ import { getRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 // This allows us to call the specified Apex method
 import getNearbyJobOrders from '@salesforce/apex/commonMapComponentController.getNearbyJobOrders';
+// Allow us to navigate to other pages
+import { NavigationMixin } from 'lightning/navigation';
+// Allows us to pre-fill fields when creating a new Job Placment record
+import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
 
 // These constants are used when pulling information from the current Case record
 const CASE_RECORD_NAME = 'ExpECM__Case_Record__c.Name';
@@ -20,12 +24,11 @@ const CASE_RECORD_LONGITUDE = 'ExpECM__Case_Record__c.Client_Mailing_Longitude__
 // Create an array of the fields we want to retrieve
 const CASE_RECORD_FIELDS = [CASE_RECORD_NAME,CASE_RECORD_PROGRAM,CASE_RECORD_STREET,CASE_RECORD_CITY,CASE_RECORD_STATE,CASE_RECORD_POSTAL_CODE,CASE_RECORD_LATITUDE,CASE_RECORD_LONGITUDE,];
 
-export default class CaseRecordMapComponent extends LightningElement {
+export default class CaseRecordMapComponent extends NavigationMixin(LightningElement) {
     // These four fields are set by the admin when configuring the Component via the Lightning App Builder
     @api proximity;
     @api listVisibility;
     @api maxMatchCount;
-    @api renderFooter;
 
     // Set up local variables
     caseRecordProgram;
@@ -41,6 +44,7 @@ export default class CaseRecordMapComponent extends LightningElement {
     mapCenter;
     markersTitle;
     selectedMarkerValue;
+    selectedJobId;
     jobToDisplay;
     listViewSetting;
     showFooter = false;
@@ -107,6 +111,7 @@ export default class CaseRecordMapComponent extends LightningElement {
     createMapMarkers(jobOrderData) {
         const newMarkers = jobOrderData.map(jobOrder => {
             return {
+                jobId: jobOrder.Id,
                 directions: encodeURI(`http://maps.google.com/maps?saddr=${jobOrder.BillingStreet__c},${jobOrder.BillingCity__c},${jobOrder.BillingState__c},${jobOrder.BillingPostalCode__c}&daddr=${this.caseRecordStreet},${this.caseRecordCity},${this.caseRecordState},${this.caseRecordPostalCode}&dirflg=r`), 
                 title: jobOrder.Name,
                 icon: 'standard:user',
@@ -178,30 +183,42 @@ export default class CaseRecordMapComponent extends LightningElement {
         this.showFooter = true;
     }
 
-    badgeSelected(event) {
-        console.log('CaseRecordMapComponent.js badgeSelected' + event);
-        const recId = event.detail.recId;
-        const action = event.detail.action;
-
-        switch(action) {
-            case 'nba':
-                {
-                    console.log('isvConsoleMap.js message' + message);
-                    break;
-                }
-            case 'NavToRecord':
-                //
-              break;
-            case 'ConvertLead':
-                //
-            break;
-            case 'NotifySales':
-                //
-            break;
-            default:
-              // code block
-          }
-
+    // Navigation Actions
+    // https://developer.salesforce.com/docs/component-library/bundle/lightning-navigation/documentation
+    navigateToJobOrder() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.jobToDisplay.jobId,
+                objectApiName: 'ExpECM__Job_Order__c',
+                actionName: 'view'
+            }
+        });
     }
+    
+    createPlacement() {
+        const defaultValues = encodeDefaultFieldValues({
+            ExpECM__Job_Order__c: this.jobToDisplay.jobId,
+            ExpECM__Case_Record__c: this.recordId,
+            ExpECM__Status__c: 'Planned',
+            ExpECM__New_Sequence__c: true
+            // RecordTypeId is not yet supported, as documented on this page as of July 2020
+            // https://developer.salesforce.com/docs/component-library/bundle/lightning-page-reference-utils/documentation
+            // RecordTypeId: '0122M000001QRKFQA4'
+        });
 
+        // eslint-disable-next-line no-console
+        console.log(defaultValues);
+
+        this[NavigationMixin.Navigate]({
+            type: 'standard__objectPage',
+            attributes: {
+                objectApiName: 'ExpECM__Placement__c',
+                actionName: 'new'
+            },
+            state: {
+                defaultFieldValues: defaultValues
+            }
+        });
+    }
 }
