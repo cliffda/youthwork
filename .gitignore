@@ -26,6 +26,9 @@ node_modules/
 # MacOS system files
 .DS_Store
 
+# Misc Files
+SoqlDev.soql
+
 # Windows system files
 Thumbs.db
 ehthumbs.db
