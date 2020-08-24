@@ -20,6 +20,7 @@ const CASE_RECORD_STATE = 'ExpECM__Case_Record__c.Client_Mailing_State__c';
 const CASE_RECORD_POSTAL_CODE = 'ExpECM__Case_Record__c.Client_Mailing_Zip__c';
 const CASE_RECORD_LATITUDE = 'ExpECM__Case_Record__c.Client_Mailing_Latitude__c';
 const CASE_RECORD_LONGITUDE = 'ExpECM__Case_Record__c.Client_Mailing_Longitude__c';
+const CASERECORD = 'CaseRecord';
 
 // Create an array of the fields we want to retrieve
 const CASE_RECORD_FIELDS = [CASE_RECORD_NAME,CASE_RECORD_PROGRAM,CASE_RECORD_STREET,CASE_RECORD_CITY,CASE_RECORD_STATE,CASE_RECORD_POSTAL_CODE,CASE_RECORD_LATITUDE,CASE_RECORD_LONGITUDE,];
@@ -37,7 +38,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
     caseRecordCity;
     caseRecordState;
     caseRecordPostalCode;
-    jcaseRecordLatitude;
+    caseRecordLatitude;
     caseRecordLongitude;
 
     mapMarkers = [];
@@ -47,7 +48,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
     selectedJobId;
     jobToDisplay;
     listViewSetting;
-    showFooter = false;
+    showJobDetailsPane = false;
     isLoading = true;
     jobDetails = new Map();
     index = 0;
@@ -140,7 +141,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
         // Insert a new entry at the beginning of the map/array that contains the Job Order.
         // This ensures that the Job Order is the first entry in the list that displays next to the actual map
         newMarkers.unshift({
-            value: 'CaseRecord',
+            value: CASERECORD,
             title: this.caseRecordName,
             location: {
                 Street: this.caseRecordStreet,
@@ -176,11 +177,17 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
         console.log('CaseRecordMapComponent.js Completed load DEBUG: ' + this.markersTitle);
     }
 
+    // This will fire when a user clicks on a map marker or the list of JobOrders
     handleMarkerSelect(event) {
         this.selectedMarkerValue = event.detail.selectedMarkerValue;
         console.log('CaseRecordMapComponent.js selectedMarkerValue: ' + this.selectedMarkerValue);
         this.jobToDisplay = this.jobDetails.get(this.selectedMarkerValue);
-        this.showFooter = true;
+        if (this.selectedMarkerValue == CASERECORD) {
+            this.showJobDetailsPane = false;
+        } else {
+            this.showJobDetailsPane = true;
+        }
+        
     }
 
     // Navigation Actions
@@ -196,6 +203,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
         });
     }
     
+    // This will execute when the user clicks on the Create Placement button
     createPlacement() {
         const defaultValues = encodeDefaultFieldValues({
             ExpECM__Job_Order__c: this.jobToDisplay.jobId,
@@ -207,9 +215,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
             // RecordTypeId: '0122M000001QRKFQA4'
         });
 
-        // eslint-disable-next-line no-console
-        console.log(defaultValues);
-
+        // This does the actual navigation
         this[NavigationMixin.Navigate]({
             type: 'standard__objectPage',
             attributes: {

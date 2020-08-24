@@ -23,7 +23,7 @@
                Job Detail Section 
             -->
             <div class="slds-col slds-size_1-of-2">
-                <template if:true={showFooter}>
+                <template if:true={showJobDetailsPane}>
                     <article class="slds-card">
                         <!-- 
                             HEADER
@@ -92,8 +92,31 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>                            
+                            </div>
                             <!-- Row 3 -->
+                            <div class="slds-form__row">
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Number of Positions</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">{jobToDisplay.numOfPositions}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Number of Assigned Positions</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">
+                                                <div class="slds-form-element__static">{jobToDisplay.numOfAssigned}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                                           
+                            <!-- Row 4 -->
                             <div class="slds-form__row">
                                 <div class="slds-form__item" role="listitem">
                                     <div
@@ -116,7 +139,7 @@
                                     </div>
                                 </div>
                             </div>                            
-                            <!-- Row 4 -->
+                            <!-- Row 5 -->
                             <div class="slds-form__row">
                                 <div class="slds-form__item" role="listitem">
                                     <div
@@ -130,7 +153,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Row 5 -->
+                            <!-- Row 6 -->
                             <div class="slds-form__row">                            
                                 <div class="slds-form__item" role="listitem">
                                     <div
@@ -143,30 +166,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>                            
-                            <!-- Row 6 -->
-                            <div class="slds-form__row">
-                                <div class="slds-form__item" role="listitem">
-                                    <div
-                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                                        <span class="slds-form-element__label">Number of Positions</span>
-                                        <div class="slds-form-element__control">
-                                            <div class="slds-form-element__static">{jobToDisplay.numOfPositions}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slds-form__item" role="listitem">
-                                    <div
-                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                                        <span class="slds-form-element__label">Number of Assigned Positions</span>
-                                        <div class="slds-form-element__control">
-                                            <div class="slds-form-element__static">
-                                                <div class="slds-form-element__static">{jobToDisplay.numOfAssigned}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>                  
+                            </div>                               
                             <!-- End of Rows -->
                         </div>
                     </article>
