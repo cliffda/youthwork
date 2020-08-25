@@ -115,7 +115,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
                 jobId: jobOrder.Id,
                 directions: encodeURI(`http://maps.google.com/maps?saddr=${jobOrder.BillingStreet__c},${jobOrder.BillingCity__c},${jobOrder.BillingState__c},${jobOrder.BillingPostalCode__c}&daddr=${this.caseRecordStreet},${this.caseRecordCity},${this.caseRecordState},${this.caseRecordPostalCode}&dirflg=r`), 
                 title: jobOrder.Name,
-                icon: 'standard:user',
+                icon: 'custom:custom85',
                 description: `Organization: ${jobOrder.OrganizationName}`, 
                 organization: jobOrder.OrganizationName,
                 distance: jobOrder.Distance,
@@ -127,7 +127,6 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
                 numOfPositions: jobOrder.ExpECM__Number_of_Positions__c,
                 numOfAssigned: jobOrder.ExpECM__Number_of_Assigned_Positions__c,     
                 value: jobOrder.Name,
-                Client: jobOrder.Id,
                 location: {
                     Street: jobOrder.BillingStreet__c,
                     City: jobOrder.BillingCity__c,
@@ -143,6 +142,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
         newMarkers.unshift({
             value: CASERECORD,
             title: this.caseRecordName,
+            icon: 'standard:user',
             location: {
                 Street: this.caseRecordStreet,
                 City: this.caseRecordCity,
@@ -163,7 +163,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
 
         // Set some additional atributes of the map Component
         this.markersTitle = 'Location & Available Job Orders';
-        this.selectedMarkerValue = 'CaseRecord';
+        this.selectedMarkerValue = this.CASERECORD;
         this.mapMarkers = newMarkers;
         this.listViewSetting = this.listVisibility;
         this.isLoading = false;

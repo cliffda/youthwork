@@ -62,6 +62,7 @@ public with sharing class commonMapComponentController {
 
             // Load the map with data
             caseRec.put('Name', currentCaseRecord.Name);
+            caseRec.put('Id', currentCaseRecord.Id);
             caseRec.put('Client_Mailing_Street__c', currentCaseRecord.Client_Mailing_Street__c);
             caseRec.put('Client_Mailing_City__c', currentCaseRecord.Client_Mailing_City__c);
             caseRec.put('Client_Mailing_State__c', currentCaseRecord.Client_Mailing_State__c);

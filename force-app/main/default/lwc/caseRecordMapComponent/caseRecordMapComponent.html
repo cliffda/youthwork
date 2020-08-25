@@ -1,5 +1,4 @@
 <template>
-    <!-- <template if:true={jobOrderName}> -->
     <lightning-card class="slds-is-relative">
         <template if:true={isLoading}>
             <lightning-spinner alternative-text="Loading" variant="brand"></lightning-spinner>
@@ -109,9 +108,7 @@
                                         class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
                                         <span class="slds-form-element__label">Number of Assigned Positions</span>
                                         <div class="slds-form-element__control">
-                                            <div class="slds-form-element__static">
-                                                <div class="slds-form-element__static">{jobToDisplay.numOfAssigned}</div>
-                                            </div>
+                                            <div class="slds-form-element__static">{jobToDisplay.numOfAssigned}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -132,9 +129,7 @@
                                         class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
                                         <span class="slds-form-element__label">Special Requests</span>
                                         <div class="slds-form-element__control">
-                                            <div class="slds-form-element__static">
-                                                <div class="slds-form-element__static">{jobToDisplay.specialRequests}</div>
-                                            </div>
+                                            <div class="slds-form-element__static">{jobToDisplay.specialRequests}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -160,9 +155,7 @@
                                         class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
                                         <span class="slds-form-element__label">Special Requirements</span>
                                         <div class="slds-form-element__control">
-                                            <div class="slds-form-element__static">
-                                                <div class="slds-form-element__static">{jobToDisplay.specialRequirements}</div>
-                                            </div>
+                                            <div class="slds-form-element__static">{jobToDisplay.specialRequirements}</div>
                                         </div>
                                     </div>
                                 </div>

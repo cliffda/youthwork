@@ -6,6 +6,10 @@ import { getRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 // This allows us to call the specified Apex method
 import getNearbyContacts from '@salesforce/apex/commonMapComponentController.getNearbyContacts';
+// Allow us to navigate to other pages
+import { NavigationMixin } from 'lightning/navigation';
+// Allows us to pre-fill fields when creating a new Job Placment record
+import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
 
 // These constants are used when pulling information from the current Job Order record
 const JOB_ORDER_NAME = 'ExpECM__Job_Order__c.Name';
@@ -16,16 +20,16 @@ const JOB_ORDER_STATE = 'ExpECM__Job_Order__c.BillingState__c';
 const JOB_ORDER_POSTAL_CODE = 'ExpECM__Job_Order__c.BillingPostalCode__c';
 const JOB_ORDER_LATITUDE = 'ExpECM__Job_Order__c.BillingLatitude__c';
 const JOB_ORDER_LONGITUDE = 'ExpECM__Job_Order__c.BillingLongitude__c';
+const JOBORDER = 'JobOrder';
 
 // Create an array of the fields we want to retrieve
 const JOB_ORDER_FIELDS = [JOB_ORDER_NAME,JOB_ORDER_PROGRAM,JOB_ORDER_STREET,JOB_ORDER_CITY,JOB_ORDER_STATE,JOB_ORDER_POSTAL_CODE,JOB_ORDER_LATITUDE,JOB_ORDER_LONGITUDE,];
 
-export default class JobOrderMapComponent extends LightningElement {
+export default class JobOrderMapComponent extends NavigationMixin(LightningElement) {
     // These four fields are set by the admin when configuring the Component via the Lightning App Builder
     @api proximity;
     @api listVisibility;
     @api maxMatchCount;
-    @api renderFooter;
 
     // Set up local variables
     jobOrderProgram;
@@ -42,8 +46,10 @@ export default class JobOrderMapComponent extends LightningElement {
     markersTitle;
     selectedMarkerValue;
     listViewSetting;
-    showFooter;
     isLoading = true;
+    caseRecordToDisplay;
+    showCaseRecordDetailsPane = false;
+    caseRecordDetails = new Map();
 
     // This uses the built-in ability to capture the record ID from the currently displayed record
     // In this case, it's the ID of the Job Order record.
@@ -103,11 +109,16 @@ export default class JobOrderMapComponent extends LightningElement {
     createMapMarkers(caseRecordData) {
         const newMarkers = caseRecordData.map(caseRecord => {
             return {
-                directions: encodeURI(`http://maps.google.com/maps?saddr=${caseRecord.Client_Mailing_Street__c},${caseRecord.Client_Mailing_City__c},${caseRecord.Client_Mailing_State__c},${caseRecord.Client_Mailing_Zip__c}&daddr=${this.jobOrderStreet},${this.jobOrderCity},${this.jobOrderState},${this.jobOrderPostalCode}&dirflg=r`), 
+                caseRecordId: caseRecord.Id,
+                directions: encodeURI(`http://maps.google.com/maps?saddr=${caseRecord.Client_Mailing_Street__c},${caseRecord.Client_Mailing_City__c},${caseRecord.Client_Mailing_State__c},${caseRecord.Client_Mailing_Zip__c}&daddr=${this.jobOrderStreet},${this.jobOrderCity},${this.jobOrderState},${this.jobOrderPostalCode}&dirflg=r`),
                 title: caseRecord.Name,
                 icon: 'standard:user',
-                description: `Distance: [${caseRecord.Distance} Miles], Travel to Training: [${caseRecord.Travel_to_Training__c}], Status: [${caseRecord.ExpECM__Status__c}],  Education Level: [${caseRecord.Education_Level__c}], Barriers to Success: [${caseRecord.Barriers_to_program_success__c}]`, 
-                Client: caseRecord.Id,
+                distance: caseRecord.Distance,
+                travelToTraining: caseRecord.Travel_to_Training__c,
+                status: caseRecord.ExpECM__Status__c,
+                educationLevel: caseRecord.Education_Level__c,
+                barriersToSuccess: caseRecord.Barriers_to_program_success__c,
+                value: caseRecord.Name,
                 location: {
                     Street: caseRecord.Client_Mailing_Street__c,
                     City: caseRecord.Client_Mailing_City__c,
@@ -121,7 +132,8 @@ export default class JobOrderMapComponent extends LightningElement {
         // Insert a new entry at the beginning of the map/array that contains the Job Order.
         // This ensures that the Job Order is the first entry in the list that displays next to the actual map
         newMarkers.unshift({
-            value: 'JobOrder',
+            value: JOBORDER,
+            icon: 'custom:custom85',
             title: this.jobOrderName,
             location: {
                 Street: this.jobOrderStreet,
@@ -139,16 +151,76 @@ export default class JobOrderMapComponent extends LightningElement {
                 City: this.jobOrderCity,
                 State: this.jobOrderState,
                 PostalCode: this.jobOrderPostalCode,
-                Country: this.jobOrderCountry
             }
         };
 
         // Set some additional atributes of the map Component
         this.markersTitle = 'Location & Available Contacts';
-        this.selectedMarkerValue = 'JobOrder';
+        this.selectedMarkerValue = this.JOBORDER;
         this.mapMarkers = newMarkers;
         this.listViewSetting = this.listVisibility;
         this.isLoading = false;
-        this.showFooter = this.renderFooter;
+
+        // Load up the array that contains the Case Reord details.  These details will be displayed on the side pane when the 
+        // Case Record is selected
+        this.index = 0;
+        while (this.index < this.mapMarkers.length) { 
+            this.caseRecordDetails.set(this.mapMarkers[this.index].value, this.mapMarkers[this.index]);
+            this.index++; 
+        }
+        
+        console.log('CaseRecordMapComponent.js Completed load DEBUG: ' + this.markersTitle);        
     }
+
+    // This will fire when a user clicks on a map marker or the list of JobOrders
+    handleMarkerSelect(event) {
+        this.selectedMarkerValue = event.detail.selectedMarkerValue;
+        console.log('jobOrderMapComponent.js selectedMarkerValue: ' + this.selectedMarkerValue);
+        this.caseRecordToDisplay = this.caseRecordDetails.get(this.selectedMarkerValue);
+        if (this.selectedMarkerValue == JOBORDER) {
+            this.showCaseRecordDetailsPane = false;
+        } else {
+            this.showCaseRecordDetailsPane = true;
+        }
+        
+    }
+
+    // Navigation Actions
+    // https://developer.salesforce.com/docs/component-library/bundle/lightning-navigation/documentation
+    navigateToCaseRecord() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.caseRecordToDisplay.caseRecordId,
+                objectApiName: 'ExpECM__Case_Record__c',
+                actionName: 'view'
+            }
+        });
+    }
+    
+    // This will execute when the user clicks on the Create Placement button
+    createPlacement() {
+        const defaultValues = encodeDefaultFieldValues({
+            ExpECM__Job_Order__c: this.recordId,
+            ExpECM__Case_Record__c: this.caseRecordToDisplay.caseRecordId,
+            ExpECM__Status__c: 'Planned',
+            ExpECM__New_Sequence__c: true
+            // RecordTypeId is not yet supported, as documented on this page as of July 2020
+            // https://developer.salesforce.com/docs/component-library/bundle/lightning-page-reference-utils/documentation
+            // RecordTypeId: '0122M000001QRKFQA4'
+        });
+
+        // This does the actual navigation
+        this[NavigationMixin.Navigate]({
+            type: 'standard__objectPage',
+            attributes: {
+                objectApiName: 'ExpECM__Placement__c',
+                actionName: 'new'
+            },
+            state: {
+                defaultFieldValues: defaultValues
+            }
+        });
+    }
+
 }
