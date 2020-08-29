@@ -23,7 +23,7 @@ const JOB_ORDER_LONGITUDE = 'ExpECM__Job_Order__c.BillingLongitude__c';
 const JOBORDER = 'JobOrder';
 
 // Create an array of the fields we want to retrieve
-const JOB_ORDER_FIELDS = [JOB_ORDER_NAME,JOB_ORDER_PROGRAM,JOB_ORDER_STREET,JOB_ORDER_CITY,JOB_ORDER_STATE,JOB_ORDER_POSTAL_CODE,JOB_ORDER_LATITUDE,JOB_ORDER_LONGITUDE,];
+const JOB_ORDER_FIELDS = [JOB_ORDER_NAME, JOB_ORDER_PROGRAM, JOB_ORDER_STREET, JOB_ORDER_CITY, JOB_ORDER_STATE, JOB_ORDER_POSTAL_CODE, JOB_ORDER_LATITUDE, JOB_ORDER_LONGITUDE,];
 
 export default class JobOrderMapComponent extends NavigationMixin(LightningElement) {
     // These four fields are set by the admin when configuring the Component via the Lightning App Builder
@@ -146,7 +146,7 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
 
         // Setting the attribute on the map component to control how the map display is centered
         this.mapCenter = {
-            location: { 
+            location: {
                 Street: this.jobOrderStreet,
                 City: this.jobOrderCity,
                 State: this.jobOrderState,
@@ -155,7 +155,7 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
         };
 
         // Set some additional atributes of the map Component
-        this.markersTitle = 'Location & Available Contacts';
+        this.markersTitle = 'Location & Available Case Records';
         this.selectedMarkerValue = this.JOBORDER;
         this.mapMarkers = newMarkers;
         this.listViewSetting = this.listVisibility;
@@ -164,12 +164,12 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
         // Load up the array that contains the Case Reord details.  These details will be displayed on the side pane when the 
         // Case Record is selected
         this.index = 0;
-        while (this.index < this.mapMarkers.length) { 
+        while (this.index < this.mapMarkers.length) {
             this.caseRecordDetails.set(this.mapMarkers[this.index].value, this.mapMarkers[this.index]);
-            this.index++; 
+            this.index++;
         }
-        
-        console.log('CaseRecordMapComponent.js Completed load DEBUG: ' + this.markersTitle);        
+
+        console.log('CaseRecordMapComponent.js Completed load DEBUG: ' + this.markersTitle);
     }
 
     // This will fire when a user clicks on a map marker or the list of JobOrders
@@ -182,7 +182,7 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
         } else {
             this.showCaseRecordDetailsPane = true;
         }
-        
+
     }
 
     // Navigation Actions
@@ -197,7 +197,7 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
             }
         });
     }
-    
+
     // This will execute when the user clicks on the Create Placement button
     createPlacement() {
         const defaultValues = encodeDefaultFieldValues({

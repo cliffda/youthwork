@@ -23,13 +23,15 @@ const CASE_RECORD_LONGITUDE = 'ExpECM__Case_Record__c.Client_Mailing_Longitude__
 const CASERECORD = 'CaseRecord';
 
 // Create an array of the fields we want to retrieve
-const CASE_RECORD_FIELDS = [CASE_RECORD_NAME,CASE_RECORD_PROGRAM,CASE_RECORD_STREET,CASE_RECORD_CITY,CASE_RECORD_STATE,CASE_RECORD_POSTAL_CODE,CASE_RECORD_LATITUDE,CASE_RECORD_LONGITUDE,];
+const CASE_RECORD_FIELDS = [CASE_RECORD_NAME, CASE_RECORD_PROGRAM, CASE_RECORD_STREET, CASE_RECORD_CITY, CASE_RECORD_STATE, CASE_RECORD_POSTAL_CODE, CASE_RECORD_LATITUDE, CASE_RECORD_LONGITUDE,];
 
 export default class CaseRecordMapComponent extends NavigationMixin(LightningElement) {
     // These four fields are set by the admin when configuring the Component via the Lightning App Builder
     @api proximity;
     @api listVisibility;
     @api maxMatchCount;
+    @api postPlacementFlow; // =  'a5P/o';
+
 
     // Set up local variables
     caseRecordProgram;
@@ -52,9 +54,10 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
     isLoading = true;
     jobDetails = new Map();
     index = 0;
+    retVal = 'home/home.jsp'; // used to tell the Flow where to return to when finished.  This is a default.
 
     // This uses the built-in ability to capture the record ID from the currently displayed record
-    // In this case, it's the ID of the Job Order record.
+    // In this case, it's the ID of the Case Record.
     @api recordId;
 
     // Pull in values from the currently displayed record using the recordId we just set
@@ -90,7 +93,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
     // This method is called when the above @wire function completes
     // The Apex method above returns the results of a SOQL survey.
     // This method will parse the results and call a method to create a 
-    // set of map markers that will be passed to the actual map component
+    // set of map markers that will be passed to the UI map component
     wiredJobOrdersJSON({ error, data }) {
         if (data) {
             this.createMapMarkers(JSON.parse(data));
@@ -109,15 +112,22 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
     // This is the method that will construct the map/array (https://www.w3schools.com/jsref/jsref_map.asp) that contains
     // the map point attributes
     // Documentation for building the Google Maps URL to show directions can be found here https://www.erichstauffer.com/technology/google-maps-query-string-parameters
+    // We're also loading lots of other fields that will be used elsewhere, such as the Job Order detail pane.
     createMapMarkers(jobOrderData) {
+        if (this.postPlacementFlow == 'Job Placement Tab') {
+            this.retVal = 'a5P/o'; // see https://help.salesforce.com/articleView?id=000325244 for explanation of object type prefix
+        } else {
+            this.retVal = this.recordId;
+        }
         const newMarkers = jobOrderData.map(jobOrder => {
+            // Do a little setup - 
             return {
                 jobId: jobOrder.Id,
-                directions: encodeURI(`http://maps.google.com/maps?saddr=${jobOrder.BillingStreet__c},${jobOrder.BillingCity__c},${jobOrder.BillingState__c},${jobOrder.BillingPostalCode__c}&daddr=${this.caseRecordStreet},${this.caseRecordCity},${this.caseRecordState},${this.caseRecordPostalCode}&dirflg=r`), 
+                directions: encodeURI(`http://maps.google.com/maps?saddr=${jobOrder.BillingStreet__c},${jobOrder.BillingCity__c},${jobOrder.BillingState__c},${jobOrder.BillingPostalCode__c}&daddr=${this.caseRecordStreet},${this.caseRecordCity},${this.caseRecordState},${this.caseRecordPostalCode}&dirflg=r`),
+                linkToFlow: `/flow/Create_Placement?Job_ID=${jobOrder.Id}&Case_Record_ID=${this.recordId}&retURL=${this.retVal}`,
                 title: jobOrder.Name,
                 icon: 'custom:custom85',
-                description: `Organization: ${jobOrder.OrganizationName}`, 
-                organization: jobOrder.OrganizationName,
+                description: jobOrder.OrganizationName,
                 distance: jobOrder.Distance,
                 jobTitle: jobOrder.Job_Title__c,
                 startDate: jobOrder.Start_Date_Time__c,
@@ -125,7 +135,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
                 specialRequirements: jobOrder.Special_Requirements__c,
                 dutiesSkills: jobOrder.Duties_Skills__c,
                 numOfPositions: jobOrder.ExpECM__Number_of_Positions__c,
-                numOfAssigned: jobOrder.ExpECM__Number_of_Assigned_Positions__c,     
+                numOfAssigned: jobOrder.ExpECM__Number_of_Assigned_Positions__c,
                 value: jobOrder.Name,
                 location: {
                     Street: jobOrder.BillingStreet__c,
@@ -137,8 +147,8 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
                 }
             };
         });
-        // Insert a new entry at the beginning of the map/array that contains the Job Order.
-        // This ensures that the Job Order is the first entry in the list that displays next to the actual map
+        // Insert a new entry at the beginning of the map/array that contains the Case Record.
+        // This ensures that the Case Record is the first entry in the list that displays next to the actual map
         newMarkers.unshift({
             value: CASERECORD,
             title: this.caseRecordName,
@@ -153,7 +163,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
 
         // Setting the attribute on the map component to control how the map display is centered
         this.mapCenter = {
-            location: { 
+            location: {
                 Street: this.caseRecordStreet,
                 City: this.caseRecordCity,
                 State: this.caseRecordState,
@@ -169,11 +179,11 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
         this.isLoading = false;
 
         this.index = 0;
-        while (this.index < this.mapMarkers.length) { 
+        while (this.index < this.mapMarkers.length) {
             this.jobDetails.set(this.mapMarkers[this.index].value, this.mapMarkers[this.index]);
-            this.index++; 
+            this.index++;
         }
-        
+
         console.log('CaseRecordMapComponent.js Completed load DEBUG: ' + this.markersTitle);
     }
 
@@ -183,11 +193,11 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
         console.log('CaseRecordMapComponent.js selectedMarkerValue: ' + this.selectedMarkerValue);
         this.jobToDisplay = this.jobDetails.get(this.selectedMarkerValue);
         if (this.selectedMarkerValue == CASERECORD) {
-            this.showJobDetailsPane = false;
+            this.showJobDetailsPane = false; // Hide the details pane if the user selected the Case Record
         } else {
-            this.showJobDetailsPane = true;
+            this.showJobDetailsPane = true; // Show the details pane if the user selected a Job Order
         }
-        
+
     }
 
     // Navigation Actions
@@ -202,7 +212,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
             }
         });
     }
-    
+
     // This will execute when the user clicks on the Create Placement button
     createPlacement() {
         const defaultValues = encodeDefaultFieldValues({

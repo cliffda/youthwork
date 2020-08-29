@@ -22,10 +22,10 @@ public with sharing class commonMapComponentController {
         Location jobOrderLocation = Location.newInstance(jobOrderLatitude,jobOrderLongitude);
 
         // Define list to receive the results of the SOQL query
-        List<ExpECM__Case_Record__c> caseRecordList = new List<ExpECM__Case_Record__c>();
+        List<ExpECM__Case_Record__c> caseRecordQueryResult = new List<ExpECM__Case_Record__c>();
 
         // Run the query
-        caseRecordList = [SELECT Id, Name,
+        caseRecordQueryResult = [SELECT Id, Name,
                 Client_Mailing_Street__c,
                 Client_Mailing_City__c,
                 Client_Mailing_State__c,
@@ -43,7 +43,7 @@ public with sharing class commonMapComponentController {
         LIMIT   :maxMatchCount];
 
         // Spin through each row returned from the SOQL query and peform some additional actions
-        for (ExpECM__Case_Record__c currentCaseRecord : caseRecordList) {
+        for (ExpECM__Case_Record__c currentCaseRecord : caseRecordQueryResult) {
             // Each record is going to be converted into a Map 
             // https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_methods_system_map.htm#apex_methods_system_map
             // The map will contain name/value pairs of field name/field value.  We're using a map so we can add a new calculated field: Distance
@@ -109,10 +109,10 @@ public with sharing class commonMapComponentController {
         Location caseRecordLocation = Location.newInstance(caseRecordLatitude,caseRecordLongitude);
 
         // Define list to receive the results of the SOQL query
-        List<ExpECM__Job_Order__c> jobOrderList = new List<ExpECM__Job_Order__c>();
+        List<ExpECM__Job_Order__c> jobOrderQueryResult = new List<ExpECM__Job_Order__c>();
 
         // Run the query
-        jobOrderList = [SELECT Id,
+        jobOrderQueryResult = [SELECT Id,
                 Name,
                 ExpECM__Organization__r.Name,
                 Job_Title__c,
@@ -136,10 +136,10 @@ public with sharing class commonMapComponentController {
         LIMIT   :maxMatchCount];
 
         // Spin through each row returned from the SOQL query and peform some additional actions
-        for (ExpECM__Job_Order__c currentJobProgramRecord : jobOrderList) {
+        for (ExpECM__Job_Order__c currentJobProgramRecord : jobOrderQueryResult) {
             // Each record is going to be converted into a Map structure
             // https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_methods_system_map.htm#apex_methods_system_map
-            // The map will contain name/value pairs of field name/field value.  We're using a map so we can add a new calculated field: Distance
+            // The map will contain name/value pairs of field name/field value.  We're creating a new map so we can add a new calculated field: Distance
             // Each record gets a new Map
             Map<String,String> jobRec = new Map<String, String>{};
 
@@ -153,7 +153,7 @@ public with sharing class commonMapComponentController {
             dist = (dist * 10).round();
             dist = dist / 10;
 
-            // Load the map with data
+            // Load the map with key/value data
             jobRec.put('Id', currentJobProgramRecord.Id) ; 
             jobRec.put('Name', currentJobProgramRecord.Name) ; 
             jobRec.put('OrganizationName', currentJobProgramRecord.ExpECM__Organization__r.Name) ; 
