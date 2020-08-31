@@ -38,6 +38,7 @@ public with sharing class commonMapComponentController {
                 Education_Level__c 
         FROM    ExpECM__Case_Record__c
         WHERE   ExpECM__Program__c = :jobOrderProgram
+        AND     ExpECM__Status__c in ('Validated','Pre-enrolled','Enrolled in JRT')
         AND     DISTANCE(ExpECM__Main_Client__r.MailingAddress, :jobOrderLocation, 'mi') < :proximity 
         ORDER BY DISTANCE(ExpECM__Main_Client__r.MailingAddress, :jobOrderLocation, 'mi')
         LIMIT   :maxMatchCount];

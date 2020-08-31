@@ -31,6 +31,8 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
     @api listVisibility;
     @api maxMatchCount;
     @api postPlacementFlow; // =  'a5P/o';
+    @api standardPlacementCreate;
+    @api flowPlacementCreate;
 
 
     // Set up local variables
@@ -212,6 +214,16 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
             }
         });
     }
+
+    navigateToPlacementFlow() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: `/flow/Create_Placement?Job_ID=${this.jobToDisplay.jobId}&Case_Record_ID=${this.recordId}&retURL=${this.retVal}`
+            }
+        });
+    }
+
 
     // This will execute when the user clicks on the Create Placement button
     createPlacement() {

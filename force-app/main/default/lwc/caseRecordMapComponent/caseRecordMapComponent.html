@@ -35,15 +35,16 @@
                                     </h2>
                                 </div>
                                 <div class="slds-no-flex">
-                                    <div class="slds-m-around_medium">
-                                    </div>
-                                    <lightning-formatted-url value={jobToDisplay.linkToFlow}
-                                        tooltip="Create Placement"
-                                        label="Open Flow to start placement creationg process" target="_new">
-                                    </lightning-formatted-url>
-                                    <lightning-button variant="brand" label="Create Job Placement"
-                                        title="Click to Create Job Placement" onclick={createPlacement}
-                                        class="slds-m-left_x-small"></lightning-button>
+                                    <template if:true={flowPlacementCreate}>
+                                        <lightning-button variant="brand" label="Create Job Placement"
+                                            title="Use Flow to start placement creation process"
+                                            onclick={navigateToPlacementFlow} class="slds-m-left_x-small"></lightning-button>
+                                    </template>
+                                    <template if:true={standardPlacementCreate}>
+                                        <lightning-button variant="brand" label="Create Job Placement"
+                                            title="Create Job Placement using standard record create UI"
+                                            onclick={createPlacement} class="slds-m-left_x-small"></lightning-button>
+                                    </template>
                                 </div>
                             </header>
                         </div>
