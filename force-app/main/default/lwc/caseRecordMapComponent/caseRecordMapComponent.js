@@ -10,6 +10,8 @@ import getNearbyJobOrders from '@salesforce/apex/commonMapComponentController.ge
 import { NavigationMixin } from 'lightning/navigation';
 // Allows us to pre-fill fields when creating a new Job Placment record
 import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
+// Allows us to refresh the Job query
+import { refreshApex } from '@salesforce/apex';
 
 // These constants are used when pulling information from the current Case record
 const CASE_RECORD_NAME = 'ExpECM__Case_Record__c.Name';
@@ -45,6 +47,8 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
     caseRecordLatitude;
     caseRecordLongitude;
 
+    allMarkers = [];
+    openMarkersOnly = [];
     mapMarkers = [];
     mapCenter;
     markersTitle;
@@ -57,10 +61,12 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
     jobDetails = new Map();
     index = 0;
     retVal = 'home/home.jsp'; // used to tell the Flow where to return to when finished.  This is a default.
+    includeAllJobs = false; 
 
     // This uses the built-in ability to capture the record ID from the currently displayed record
     // In this case, it's the ID of the Case Record.
     @api recordId;
+    wiredJobOrders;
 
     // Pull in values from the currently displayed record using the recordId we just set
     // The data is pulled without having to make a database call
@@ -96,7 +102,9 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
     // The Apex method above returns the results of a SOQL survey.
     // This method will parse the results and call a method to create a 
     // set of map markers that will be passed to the UI map component
-    wiredJobOrdersJSON({ error, data }) {
+    wiredJobOrdersJSON(value) {
+        //this.wiredJobOrders = value; // track the provisioned value
+        const { data, error } = value; // destructure the provisioned value
         if (data) {
             this.createMapMarkers(JSON.parse(data));
         } else if (error) {
@@ -121,37 +129,47 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
         } else {
             this.retVal = this.recordId;
         }
-        const newMarkers = jobOrderData.map(jobOrder => {
-            // Do a little setup - 
-            return {
-                jobId: jobOrder.Id,
-                directions: encodeURI(`http://maps.google.com/maps?saddr=${jobOrder.BillingStreet__c},${jobOrder.BillingCity__c},${jobOrder.BillingState__c},${jobOrder.BillingPostalCode__c}&daddr=${this.caseRecordStreet},${this.caseRecordCity},${this.caseRecordState},${this.caseRecordPostalCode}&dirflg=r`),
-                linkToFlow: `/flow/Create_Placement?Job_ID=${jobOrder.Id}&Case_Record_ID=${this.recordId}&retURL=${this.retVal}`,
-                title: jobOrder.Name,
+        let myArray = [];
+        for (const element of jobOrderData) {
+            const entry = {
+                jobId: element.Id,
+                jobStatus: element.ExpECM__Status__c,
+                directions: encodeURI(`http://maps.google.com/maps?saddr=${element.BillingStreet__c},${element.BillingCity__c},${element.BillingState__c},${element.BillingPostalCode__c}&daddr=${this.caseRecordStreet},${this.caseRecordCity},${this.caseRecordState},${this.caseRecordPostalCode}&dirflg=r`),
+                linkToFlow: `/flow/Create_Placement?Job_ID=${element.Id}&Case_Record_ID=${this.recordId}&retURL=${this.retVal}`,
+                title:  `${element.Name} (${element.ExpECM__Status__c})`,
                 icon: 'custom:custom85',
-                description: jobOrder.OrganizationName,
-                distance: jobOrder.Distance,
-                jobTitle: jobOrder.Job_Title__c,
-                startDate: jobOrder.Start_Date_Time__c,
-                specialRequests: jobOrder.Special_Requests__c,
-                specialRequirements: jobOrder.Special_Requirements__c,
-                dutiesSkills: jobOrder.Duties_Skills__c,
-                numOfPositions: jobOrder.ExpECM__Number_of_Positions__c,
-                numOfAssigned: jobOrder.ExpECM__Number_of_Assigned_Positions__c,
-                value: jobOrder.Name,
+                description: element.OrganizationName,
+                distance: element.Distance,
+                jobTitle: element.Job_Title__c,
+                startDate: element.Start_Date_Time__c,
+                specialRequests: element.Special_Requests__c,
+                specialRequirements: element.Special_Requirements__c,
+                dutiesSkills: element.Duties_Skills__c,
+                numOfPositions: element.ExpECM__Number_of_Positions__c,
+                numOfAssigned: element.ExpECM__Number_of_Assigned_Positions__c,
+                value: `${element.Name} (${element.ExpECM__Status__c})`,
                 location: {
-                    Street: jobOrder.BillingStreet__c,
-                    City: jobOrder.BillingCity__c,
-                    State: jobOrder.BillingState__c,
-                    PostalCode: jobOrder.BillingPostalCode__c,
-                    Latitude: jobOrder.BillingLatitude__c,
-                    Longitude: jobOrder.BillingLongitude__c
+                    Street: element.BillingStreet__c,
+                    City: element.BillingCity__c,
+                    State: element.BillingState__c,
+                    PostalCode: element.BillingPostalCode__c,
+                    Latitude: element.BillingLatitude__c,
+                    Longitude: element.BillingLongitude__c
                 }
             };
-        });
+
+            // Add it to the All Markers array
+            this.allMarkers.push(entry);
+
+            // Only add Open jobs to the Open Markers array
+            if (entry.jobStatus == 'Open') {
+                this.openMarkersOnly.push(entry);
+            }
+        }
+        
         // Insert a new entry at the beginning of the map/array that contains the Case Record.
         // This ensures that the Case Record is the first entry in the list that displays next to the actual map
-        newMarkers.unshift({
+        const CaseRecordEntry = {
             value: CASERECORD,
             title: this.caseRecordName,
             icon: 'standard:user',
@@ -159,9 +177,13 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
                 Street: this.caseRecordStreet,
                 City: this.caseRecordCity,
                 State: this.caseRecordState,
-                PostalCode: this.caseRecordPostalCode
+                PostalCode: this.caseRecordPostalCode,
+                Latitude: this.caseRecordLatitude,
+                Longitude: this.caseRecordLongitude
             }
-        });
+        };
+        this.openMarkersOnly.unshift(CaseRecordEntry);        
+        this.allMarkers.unshift(CaseRecordEntry);
 
         // Setting the attribute on the map component to control how the map display is centered
         this.mapCenter = {
@@ -176,24 +198,22 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
         // Set some additional atributes of the map Component
         this.markersTitle = 'Location & Available Job Orders';
         this.selectedMarkerValue = this.CASERECORD;
-        this.mapMarkers = newMarkers;
+        this.mapMarkers = this.openMarkersOnly;
         this.listViewSetting = this.listVisibility;
         this.isLoading = false;
-
-        this.index = 0;
-        while (this.index < this.mapMarkers.length) {
-            this.jobDetails.set(this.mapMarkers[this.index].value, this.mapMarkers[this.index]);
-            this.index++;
-        }
-
-        console.log('CaseRecordMapComponent.js Completed load DEBUG: ' + this.markersTitle);
     }
 
     // This will fire when a user clicks on a map marker or the list of JobOrders
     handleMarkerSelect(event) {
         this.selectedMarkerValue = event.detail.selectedMarkerValue;
-        console.log('CaseRecordMapComponent.js selectedMarkerValue: ' + this.selectedMarkerValue);
-        this.jobToDisplay = this.jobDetails.get(this.selectedMarkerValue);
+
+        for (const row of this.mapMarkers) {
+            if (row.value == this.selectedMarkerValue) {
+                this.jobToDisplay = row;
+                break;
+            }
+        }
+
         if (this.selectedMarkerValue == CASERECORD) {
             this.showJobDetailsPane = false; // Hide the details pane if the user selected the Case Record
         } else {
@@ -214,6 +234,27 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
             }
         });
     }
+
+    refreshData() {
+        const checked = Array.from(
+            this.template.querySelectorAll('lightning-input')
+        )
+            // Filter down to checked items
+            .filter(element => element.checked)
+            // Map checked items to their labels
+            .map(element => element.label);
+
+        if (checked.includes('Include Closed and Prospective Job Orders')) {
+            this.mapMarkers = this.allMarkers;
+        } else {
+            this.mapMarkers = this.openMarkersOnly;
+        }
+
+        this.showJobDetailsPane = false;
+        
+        return;
+    }
+
 
     navigateToPlacementFlow() {
         this[NavigationMixin.Navigate]({

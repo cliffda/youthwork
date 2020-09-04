@@ -128,13 +128,15 @@ public with sharing class commonMapComponentController {
                 BillingState__c,
                 BillingPostalCode__c,
                 BillingLatitude__c,
-                BillingLongitude__c
+                BillingLongitude__c,
+                ExpECM__Status__c
         FROM    ExpECM__Job_Order__c
         WHERE   Program__c = :caseRecordProgram
-        AND     ExpECM__Status__c = 'Open'
         AND     DISTANCE(ExpECM__Organization__r.BillingAddress, :caseRecordLocation, 'mi') < :proximity 
         ORDER BY DISTANCE(ExpECM__Organization__r.BillingAddress, :caseRecordLocation, 'mi')
         LIMIT   :maxMatchCount];
+        
+        //         AND     ExpECM__Status__c = 'Open'
 
         // Spin through each row returned from the SOQL query and peform some additional actions
         for (ExpECM__Job_Order__c currentJobProgramRecord : jobOrderQueryResult) {
@@ -171,6 +173,7 @@ public with sharing class commonMapComponentController {
             jobRec.put('BillingPostalCode__c', currentJobProgramRecord.BillingPostalCode__c);
             jobRec.put('BillingLatitude__c', currentJobProgramRecord.BillingLatitude__c.format()); //format() converts numberic format to string
             jobRec.put('BillingLongitude__c', currentJobProgramRecord.BillingLongitude__c.format());
+            jobRec.put('ExpECM__Status__c', currentJobProgramRecord.ExpECM__Status__c);
             jobRec.put('Distance', dist.format());
             
             // Add the map to the list
