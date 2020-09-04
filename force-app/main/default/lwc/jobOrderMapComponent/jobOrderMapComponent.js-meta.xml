@@ -15,6 +15,9 @@
             <property label="Proximity" type="Integer" name="proximity" default="5" description="Contact proximity radius, in miles"/>
             <property label="Max # of Matches" type="Integer"  name="maxMatchCount" default="10" description="The maximum number of matches to return"/>
             <property label="List Visibility" name="listVisibility" type="String" datasource="hidden,visible" description="Visibility setting for list of map points" />
+            <property label="Show button: Create Placment via Standard Create" name="standardPlacementCreate" type="Boolean" />
+            <property label="Show Link: Create Placment via Flow" name="flowPlacementCreate" type="Boolean" />
+            <property label="Destination after Create Placement Flow" name="postPlacementFlow" type="string" datasource="Job Placement Tab,Original Job Record" description="When a user clicks the Finish button upon completing the Placement flow, where should the user be redirected?" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

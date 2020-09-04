@@ -1,7 +1,7 @@
 @istest (SeeAllData=true) 
 // We're letting the test see all live data in the org because setting up test data is a challenge given
 // all the validation rules, necessaryrelated records, and the geocoding reqirement.
-private class MapComponentTests {
+private class commonMapComponentControllerTests {
     @IsTest
     static void getNearbyContacts(){
         // Set a Job Order to use for the test.  If the test is failing it's likely due to this record.

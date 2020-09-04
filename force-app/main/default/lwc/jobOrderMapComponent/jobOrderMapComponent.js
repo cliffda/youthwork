@@ -10,6 +10,8 @@ import getNearbyContacts from '@salesforce/apex/commonMapComponentController.get
 import { NavigationMixin } from 'lightning/navigation';
 // Allows us to pre-fill fields when creating a new Job Placment record
 import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
+// Get the ID of the current user
+import USER_ID from '@salesforce/user/Id'; 
 
 // These constants are used when pulling information from the current Job Order record
 const JOB_ORDER_NAME = 'ExpECM__Job_Order__c.Name';
@@ -30,6 +32,9 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
     @api proximity;
     @api listVisibility;
     @api maxMatchCount;
+    @api postPlacementFlow; // =  'a5P/o';
+    @api standardPlacementCreate;
+    @api flowPlacementCreate;
 
     // Set up local variables
     jobOrderProgram;
@@ -41,15 +46,18 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
     jobOrderLatitude;
     jobOrderLongitude;
 
+    // UI variables
     mapMarkers = [];
     mapCenter;
     markersTitle;
     selectedMarkerValue;
     listViewSetting;
     isLoading = true;
+
     caseRecordToDisplay;
     showCaseRecordDetailsPane = false;
     caseRecordDetails = new Map();
+    retVal = 'home/home.jsp'; // used to tell the Flow where to return to when finished.  This is a default.
 
     // This uses the built-in ability to capture the record ID from the currently displayed record
     // In this case, it's the ID of the Job Order record.
@@ -108,9 +116,17 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
     // the map point attributes
     createMapMarkers(caseRecordData) {
         const newMarkers = caseRecordData.map(caseRecord => {
+            // See what the designtime configuration is for destination of the Flow option for creating the placement
+            // and set the return value to the appropriate option.
+            if (this.postPlacementFlow == 'Job Placement Tab') {
+                this.retVal = 'a5P/o'; // return to the placement tab. See https://help.salesforce.com/articleView?id=000325244 for explanation of object type prefix
+            } else {
+                this.retVal = this.recordId; // return to the originating record
+            }
             return {
                 caseRecordId: caseRecord.Id,
                 directions: encodeURI(`http://maps.google.com/maps?saddr=${caseRecord.Client_Mailing_Street__c},${caseRecord.Client_Mailing_City__c},${caseRecord.Client_Mailing_State__c},${caseRecord.Client_Mailing_Zip__c}&daddr=${this.jobOrderStreet},${this.jobOrderCity},${this.jobOrderState},${this.jobOrderPostalCode}&dirflg=r`),
+                linkToFlow: `/flow/Create_Placement?Job_ID=${caseRecord.Id}&Case_Record_ID=${this.recordId}&retURL=${this.retVal}`,
                 title: caseRecord.Name,
                 icon: 'standard:user',
                 distance: caseRecord.Distance,
@@ -172,6 +188,10 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
         console.log('CaseRecordMapComponent.js Completed load DEBUG: ' + this.markersTitle);
     }
 
+    // ************************************************************************
+    // Event Method Section
+    // ************************************************************************
+
     // This will fire when a user clicks on a map marker or the list of JobOrders
     handleMarkerSelect(event) {
         this.selectedMarkerValue = event.detail.selectedMarkerValue;
@@ -198,11 +218,24 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
         });
     }
 
+
+    // This will navigate to the URL corresponding to the Create_Placement flow
+    navigateToPlacementFlow() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url: `/flow/Create_Placement?Job_ID=${this.recordId}&Case_Record_ID=${this.caseRecordToDisplay.caseRecordId}&retURL=${this.retVal}`
+            }
+        });
+    }
+
+
     // This will execute when the user clicks on the Create Placement button
     createPlacement() {
         const defaultValues = encodeDefaultFieldValues({
             ExpECM__Job_Order__c: this.recordId,
             ExpECM__Case_Record__c: this.caseRecordToDisplay.caseRecordId,
+            ExpECM__Placement_Specialist__c: USER_ID,
             ExpECM__Status__c: 'Planned',
             ExpECM__New_Sequence__c: true
             // RecordTypeId is not yet supported, as documented on this page as of July 2020
