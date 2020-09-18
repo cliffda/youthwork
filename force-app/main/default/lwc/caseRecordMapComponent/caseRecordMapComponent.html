@@ -28,9 +28,11 @@
                         -->
                         <div class="slds-card__header slds-grid">
                             <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                <!-- Icon -->
                                 <div class="slds-media__figure">
                                     <lightning-icon icon-name="custom:custom85" title="custom88"></lightning-icon>
                                 </div>
+                                <!-- Name of Job and link to it-->
                                 <div class="slds-media__body">
                                     <h2 class="slds-card__header-title">
                                         <lightning-button variant="base" label={selectedMarkerValue}
@@ -39,11 +41,14 @@
                                     </h2>
                                 </div>
                                 <div class="slds-no-flex">
+                                    <!-- Button for creating Placement via Flow -->
                                     <template if:true={flowPlacementCreate}>
                                         <lightning-button variant="brand" label="Create Job Placement"
                                             title="Use Flow to start placement creation process"
-                                            onclick={navigateToPlacementFlow} class="slds-m-left_x-small"></lightning-button>
+                                            onclick={navigateToPlacementFlow} class="slds-m-left_x-small">
+                                        </lightning-button>
                                     </template>
+                                    <!-- Button for creating Placement via standard record create process -->
                                     <template if:true={standardPlacementCreate}>
                                         <lightning-button variant="brand" label="Create Job Placement"
                                             title="Create Job Placement using standard record create UI"

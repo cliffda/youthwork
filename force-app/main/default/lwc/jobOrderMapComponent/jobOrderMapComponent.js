@@ -104,8 +104,8 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
             this.isLoading = false;
             this.dispatchEvent(
                 new ShowToastEvent({
-                    title: 'Error loading Case Records Near Job',
-                    message: error.message,
+                    title: 'Error loading Case Records',
+                    message: error.body.message,
                     variant: 'error'
                 })
             );
