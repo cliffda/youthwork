@@ -68,7 +68,7 @@
                                         class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
                                         <span class="slds-form-element__label">Organization</span>
                                         <div class="slds-form-element__control">
-                                            <div class="slds-form-element__static">{jobToDisplay.description}</div>
+                                            <div class="slds-form-element__static">{jobToDisplay.organization}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -156,6 +156,27 @@
                                 <div class="slds-form__item" role="listitem">
                                     <div
                                         class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Supervisor</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">{jobToDisplay.SupervisorName}, {jobToDisplay.SupervisorPhone}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                        <span class="slds-form-element__label">Alternate Supervisor</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__static">{jobToDisplay.AltSupervisorName}, {jobToDisplay.AltSupervisorPhone}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                            <!-- Row 6 -->
+                            <div class="slds-form__row">
+                                <div class="slds-form__item" role="listitem">
+                                    <div
+                                        class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
                                         <span class="slds-form-element__label">Duties/Skills</span>
                                         <div class="slds-form-element__control">
                                             <div class="slds-form-element__static">
@@ -166,7 +187,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Row 6 -->
+                            <!-- Row 7 -->
                             <div class="slds-form__row">
                                 <div class="slds-form__item" role="listitem">
                                     <div

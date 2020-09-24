@@ -144,9 +144,9 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
                 jobStatus: jobOrderRecord.ExpECM__Status__c,
                 directions: encodeURI(`http://maps.google.com/maps?saddr=${jobOrderRecord.BillingStreet__c},${jobOrderRecord.BillingCity__c},${jobOrderRecord.BillingState__c},${jobOrderRecord.BillingPostalCode__c}&daddr=${this.caseRecordStreet},${this.caseRecordCity},${this.caseRecordState},${this.caseRecordPostalCode}&dirflg=r`),
                 linkToFlow: `/flow/Create_Placement?Job_ID=${jobOrderRecord.Id}&Case_Record_ID=${this.recordId}&retURL=${this.retVal}`,
-                title:  `${jobOrderRecord.Name} (${jobOrderRecord.ExpECM__Status__c})`,
+                title:  `Worksite: [${jobOrderRecord.OrganizationName}] Position: [${jobOrderRecord.Job_Title__c} (${jobOrderRecord.ExpECM__Status__c})]`,
                 icon: 'custom:custom85',
-                description: jobOrderRecord.OrganizationName,
+                organization: jobOrderRecord.OrganizationName,
                 distance: jobOrderRecord.Distance,
                 jobTitle: jobOrderRecord.Job_Title__c,
                 startDate: jobOrderRecord.Start_Date_Time__c,
@@ -155,6 +155,10 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
                 dutiesSkills: jobOrderRecord.Duties_Skills__c,
                 numOfPositions: jobOrderRecord.ExpECM__Number_of_Positions__c,
                 numOfAssigned: jobOrderRecord.ExpECM__Number_of_Assigned_Positions__c,
+                SupervisorName: jobOrderRecord.Supervisor_Name,
+                SupervisorPhone: jobOrderRecord.Supervisor_Phone,
+                AltSupervisorName: jobOrderRecord.Alt_Supervisor_Name,
+                AltSupervisorPhone: jobOrderRecord.Alt_Supervisor_Phone,
                 value: `${jobOrderRecord.Name} (${jobOrderRecord.ExpECM__Status__c})`,
                 location: {
                     Street: jobOrderRecord.BillingStreet__c,
@@ -179,7 +183,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
         // This ensures that the Case Record is the first entry in the list that displays next to the actual map
         const CaseRecordEntry = {
             value: CASERECORD,
-            title: this.caseRecordName,
+            //title: this.caseRecordName,
             icon: 'standard:user',
             location: {
                 Street: this.caseRecordStreet,

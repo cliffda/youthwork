@@ -25,7 +25,8 @@ const JOB_ORDER_LONGITUDE = 'ExpECM__Job_Order__c.BillingLongitude__c';
 const JOBORDER = 'JobOrder';
 
 // Create an array of the fields we want to retrieve
-const JOB_ORDER_FIELDS = [JOB_ORDER_NAME, JOB_ORDER_PROGRAM, JOB_ORDER_STREET, JOB_ORDER_CITY, JOB_ORDER_STATE, JOB_ORDER_POSTAL_CODE, JOB_ORDER_LATITUDE, JOB_ORDER_LONGITUDE,];
+const JOB_ORDER_FIELDS = [JOB_ORDER_NAME, JOB_ORDER_PROGRAM, JOB_ORDER_STREET, JOB_ORDER_CITY,
+     JOB_ORDER_STATE, JOB_ORDER_POSTAL_CODE, JOB_ORDER_LATITUDE, JOB_ORDER_LONGITUDE];
 
 export default class JobOrderMapComponent extends NavigationMixin(LightningElement) {
     // These four fields are set by the admin when configuring the Component via the Lightning App Builder
@@ -135,6 +136,15 @@ export default class JobOrderMapComponent extends NavigationMixin(LightningEleme
                 educationLevel: caseRecord.Education_Level__c,
                 barriersToSuccess: caseRecord.Barriers_to_program_success__c,
                 value: caseRecord.Name,
+                jobPlacementPriorities: caseRecord.JobPlacementPriorities__c,
+                hasComputer: caseRecord.Has_Computer__c,
+                hasInternet: caseRecord.Has_Internet__c,
+                phone: caseRecord.Phone,
+                pregnant: caseRecord.Are_you_pregnant__c,
+                dueDate: caseRecord.ExpECM__Due_Date__c,
+                preferredLanguage: caseRecord.ExpECM__Preferred_Language__c,
+                accomodations: caseRecord.Accomodations__c,
+                accomodationsDescription: caseRecord.Accomodations_Description__c,
                 location: {
                     Street: caseRecord.Client_Mailing_Street__c,
                     City: caseRecord.Client_Mailing_City__c,
