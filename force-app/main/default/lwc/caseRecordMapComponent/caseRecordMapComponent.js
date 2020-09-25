@@ -183,7 +183,7 @@ export default class CaseRecordMapComponent extends NavigationMixin(LightningEle
         // This ensures that the Case Record is the first entry in the list that displays next to the actual map
         const CaseRecordEntry = {
             value: CASERECORD,
-            //title: this.caseRecordName,
+            title: this.caseRecordName,
             icon: 'standard:user',
             location: {
                 Street: this.caseRecordStreet,

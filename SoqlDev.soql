@@ -1,10 +1,12 @@
-SELECT Id,
-                Name,
-                ExpECM__Organization__c,
-                ExpECM__Organization__r.Name
-        FROM    ExpECM__Job_Order__c
+SELECT 
+ExpECM__Main_Client__r.phone,
+ExpECM__Main_Client__r.MailingCity,
+ExpECM__Main_Client__r.MailingPostalCode,
+JobPlacementPriorities__c,
+ExpECM__Main_Client__r.Are_you_pregnant__c,
+ExpECM__Main_Client__r.ExpECM__Due_Date__c,
+ExpECM__Main_Client__r.ExpECM__Preferred_Language__c,
+Has_Computer__c,
+Has_Internet__c
+        FROM    ExpECM__Case_Record__c
         limit 10
-
-
-
-
