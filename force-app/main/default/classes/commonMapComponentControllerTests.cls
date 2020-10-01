@@ -1,19 +1,15 @@
 @istest
-// We're letting the test see all live data in the org because setting up test data is a challenge given
-// all the validation rules, necessaryrelated records, and the geocoding reqirement.
 private class commonMapComponentControllerTests {
+    // This test is all about addresses, make sure we use the same one
+    static String street = '3703 Stanley Tolliver Ave';
+    static String city = 'Cleveland';
+    static String state  = 'OH';
+    static String postalCode = '44115';
+    static double latitude = 41.498097;
+    static double longitude = -81.660564;
     
     @IsTest
     static void getNearbyContacts(){
-
-        // This test is all about addresses, make sure we use the same one
-        String street = '3703 Stanley Tolliver Ave';
-        String city = 'Cleveland';
-        String state  = 'OH';
-        String postalCode = '44115';
-        double latitude = 41.498097;
-        double longitude = -81.660564;
-
         /* ********************************************************************
                                 EMPLOYER TEST DATA
         ******************************************************************** */
