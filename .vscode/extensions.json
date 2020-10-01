@@ -1,5 +1,5 @@
 {
-  "recommendations": [
+  "recommendations":  [
     "salesforce.salesforcedx-vscode",
     "redhat.vscode-xml",
     "dbaeumer.vscode-eslint",

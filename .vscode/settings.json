@@ -1,6 +1,6 @@
 {
   "salesforcedx-vscode-core.push-or-deploy-on-save.enabled": false,
-  "search.exclude": {
+  "search.exclude": { 
     "**/node_modules": true,
     "**/bower_components": true,
     "**/.sfdx": true
