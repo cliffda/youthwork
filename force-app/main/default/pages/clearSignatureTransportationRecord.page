@@ -1,3 +1,0 @@
-<apex:page standardController="Transportation_Record__c" showHeader="false" title="Clear Signature">
-<EZSign:clearSignature />
-</apex:page>

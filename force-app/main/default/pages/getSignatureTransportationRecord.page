@@ -1,3 +1,0 @@
-<apex:page standardController="Transportation_Record__c" showHeader="false" title="Get Signature" >
-<EZSign:getSignature W="400" />
-</apex:page>
