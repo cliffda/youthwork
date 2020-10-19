@@ -108,9 +108,6 @@ public with sharing class commonMapComponentController {
 
         }
         
-        //System.debug('RAW=' + retVal);
-        //System.debug('JSON=' + JSON.serialize(retVal));
-        
         //Return the list of matching Case Records in JSON format
         return JSON.serialize(retVal);
     }
@@ -167,8 +164,6 @@ public with sharing class commonMapComponentController {
         ORDER BY DISTANCE(ExpECM__Organization__r.BillingAddress, :caseRecordLocation, 'mi')
         LIMIT   :maxMatchCount];
         
-        //         AND     ExpECM__Status__c = 'Open'
-
         // Spin through each row returned from the SOQL query and peform some additional actions
         for (ExpECM__Job_Order__c currentJobProgramRecord : jobOrderQueryResult) {
             // Each record is going to be converted into a Map structure
@@ -215,9 +210,6 @@ public with sharing class commonMapComponentController {
             retVal.add(jobRec);
 
         }
-        
-        //System.debug('RAW=' + retVal);
-        //System.debug('JSON=' + JSON.serialize(retVal));
         
         //Return the list of matching Case Records in JSON format
         return JSON.serialize(retVal);
