@@ -88,8 +88,8 @@ public with sharing class commonMapComponentController {
             caseRec.put('Barriers_to_program_success__c', String.isBlank(currentCaseRecord.Barriers_to_program_success__c) ? 'N/A' : currentCaseRecord.Barriers_to_program_success__c);
             caseRec.put('Education_Level__c', currentCaseRecord.Education_Level__c);
             caseRec.put('JobPlacementPriorities__c', currentCaseRecord.JobPlacementPriorities__c);
-            caseRec.put('Has_Computer__c', (currentCaseRecord.Has_Computer__c) ? 'Yes' : 'No');
-            caseRec.put('Has_Internet__c', (currentCaseRecord.Has_Internet__c) ? 'Yes' : 'No');
+            caseRec.put('Has_Computer__c', (currentCaseRecord.Has_Computer__c));
+            caseRec.put('Has_Internet__c', (currentCaseRecord.Has_Internet__c));
             caseRec.put('Phone', currentCaseRecord.ExpECM__Main_Client__r.phone);
             caseRec.put('Are_you_pregnant__c', currentCaseRecord.ExpECM__Main_Client__r.Are_you_pregnant__c);
             if (currentCaseRecord.ExpECM__Main_Client__r.ExpECM__Due_Date__c == null) {
@@ -205,7 +205,7 @@ public with sharing class commonMapComponentController {
             jobRec.put('Alt_Supervisor_Name', currentJobProgramRecord.Alternate_Supervisor__r.name);
             jobRec.put('Alt_Supervisor_Phone', currentJobProgramRecord.Alternate_Supervisor__r.phone);
             jobRec.put('Distance', dist.format());
-            
+
             // Add the map to the list
             retVal.add(jobRec);
 

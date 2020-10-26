@@ -1,5 +1,6 @@
 @istest
 private class commonMapComponentControllerTests {
+	private static final String EMPLOYER_ACCOUNT_RECORD_TYPE_ID = '01241000000fd4GAAQ';
     // This test is all about addresses, make sure we use the same one
     static String street = '3703 Stanley Tolliver Ave';
     static String city = 'Cleveland';
@@ -16,80 +17,111 @@ private class commonMapComponentControllerTests {
         //
         // Create Employer Account
         //
-        Account employerAccount = new Account();
-        employerAccount.name = 'Employer Account';
-        employerAccount.BillingCity = city;
-        employerAccount.BillingLatitude = latitude;
-        employerAccount.BillingLongitude = longitude;
-        employerAccount.BillingPostalCode = postalCode;
-        employerAccount.BillingState = state;
-        employerAccount.BillingStreet = street;
-        employerAccount.RecordTypeId = '01241000000fd4GAAQ';
-        insert employerAccount;
-        System.debug('DBG:Account Info = ' + employerAccount);
+        Account employerAccountTestRec = new Account();
+        employerAccountTestRec.name = 'Employer Account';
+        employerAccountTestRec.BillingCity = city;
+        employerAccountTestRec.BillingLatitude = latitude;
+        employerAccountTestRec.BillingLongitude = longitude;
+        employerAccountTestRec.BillingPostalCode = postalCode;
+        employerAccountTestRec.BillingState = state;
+        employerAccountTestRec.BillingStreet = street;
+        employerAccountTestRec.RecordTypeId = EMPLOYER_ACCOUNT_RECORD_TYPE_ID;
+        insert employerAccountTestRec;
+        System.debug('DBG:Account Info = ' + employerAccountTestRec);
 
         //
         // Create Program
         //
-        ExpECM__Program__c program1 = new ExpECM__Program__c();
-        program1.Name = 'Program A1';
-        program1.ExpECM__Organization__c = employerAccount.id;
-        insert program1;
-        System.debug('DBG:Program = ' + program1);
+        ExpECM__Program__c programTestRec = new ExpECM__Program__c();
+        programTestRec.Name = 'Program A1';
+        programTestRec.ExpECM__Organization__c = employerAccountTestRec.id;
+        insert programTestRec;
+        System.debug('DBG:Program = ' + programTestRec);
 
-         //
-        // Create Job Order
+        //
+        // Create Job Order 1
         //       
-        ExpECM__Job_Order__c jobOrder1 = new ExpECM__Job_Order__c();
-        jobOrder1.Program__c = program1.id;
-        jobOrder1.ExpECM__Organization__c = employerAccount.id;
-        insert jobOrder1;
-        System.debug('DBG:Job Order = ' + jobOrder1);
+        ExpECM__Job_Order__c jobOrderTestRec = new ExpECM__Job_Order__c();
+        jobOrderTestRec.Program__c = programTestRec.id;
+        jobOrderTestRec.ExpECM__Organization__c = employerAccountTestRec.id;
+        insert jobOrderTestRec;
+        System.debug('DBG:Job Order = ' + jobOrderTestRec);
+
+        //
+        // Create Job Order 2
+        //       
+        jobOrderTestRec.id = null;
+        jobOrderTestRec.Duties_Skills__c = 'Lorem ipsum';
+        insert jobOrderTestRec;
+        System.debug('DBG:Job Order = ' + jobOrderTestRec);
 
         /* ********************************************************************
-                                CLIENT TEST DATA
+                                CLIENT TEST DATA 1
         ******************************************************************** */        
         //
         // Create Client Account
         //
-        Account clientAccount = new Account();
-        clientAccount.name = 'Client Account';
-        clientAccount.BillingCity = city;
-        clientAccount.BillingLatitude = latitude;
-        clientAccount.BillingLongitude = longitude;
-        clientAccount.BillingPostalCode = postalCode;
-        clientAccount.BillingState = state;
-        clientAccount.BillingStreet = street;
-        clientAccount.RecordTypeId = '01241000000fd4GAAQ';
-        insert clientAccount;
-        System.debug('DBG:Account Info = ' + clientAccount);
+        Account clientAccountTestRec = new Account();
+        clientAccountTestRec.name = 'Client Account';
+        clientAccountTestRec.BillingCity = city;
+        clientAccountTestRec.BillingLatitude = latitude;
+        clientAccountTestRec.BillingLongitude = longitude;
+        clientAccountTestRec.BillingPostalCode = postalCode;
+        clientAccountTestRec.BillingState = state;
+        clientAccountTestRec.BillingStreet = street;
+        clientAccountTestRec.RecordTypeId = EMPLOYER_ACCOUNT_RECORD_TYPE_ID;
+        insert clientAccountTestRec;
+        System.debug('DBG:Account Info = ' + clientAccountTestRec);
 
         //
         // Create Client Contact
         //
-        Contact contact1 = new Contact();
-        contact1.LastName = 'Contact A1 for Account A1';
-        contact1.AccountId = clientAccount.id;
-        contact1.MailingCity = city;
-        contact1.MailingStreet = street;
-        contact1.MailingStreet = state;
-        contact1.MailingPostalCode = postalCode;
-        contact1.MailingLatitude = latitude;
-        contact1.MailingLongitude = longitude;
-        insert contact1;
-        System.debug('DBG:Contact Info = ' + contact1);
+        Contact contactRecTestRec = new Contact();
+        contactRecTestRec.LastName = 'Contact A1 for Account A1';
+        contactRecTestRec.AccountId = clientAccountTestRec.id;
+        contactRecTestRec.MailingCity = city;
+        contactRecTestRec.MailingStreet = street;
+        contactRecTestRec.MailingStreet = state;
+        contactRecTestRec.MailingPostalCode = postalCode;
+        contactRecTestRec.MailingLatitude = latitude;
+        contactRecTestRec.MailingLongitude = longitude;
+        insert contactRecTestRec;
+        System.debug('DBG:Contact Info = ' + contactRecTestRec);
 
         //
         // Create Client Case Record
         //      
-        ExpECM__Case_Record__c caseRec1 = new ExpECM__Case_Record__c();  
-        caseRec1.ExpECM__Main_Client__c = contact1.id;
-        caseRec1.ExpECM__Organization__c	= clientAccount.Id;
-        caseRec1.ExpECM__Program__c = program1.id;
-        caseRec1.Work_Experience_Status__c = 'Approved for Placement';
-        caseRec1.ExpECM__Status__c = 'Validated';
-        insert caseRec1;
-        System.debug('DBG:Case Record = ' + caseRec1);
+        ExpECM__Case_Record__c caseRecTestRec = new ExpECM__Case_Record__c();  
+        caseRecTestRec.ExpECM__Main_Client__c = contactRecTestRec.id;
+        caseRecTestRec.ExpECM__Organization__c	= clientAccountTestRec.Id;
+        caseRecTestRec.ExpECM__Program__c = programTestRec.id;
+        caseRecTestRec.Work_Experience_Status__c = 'Approved for Placement';
+        caseRecTestRec.ExpECM__Status__c = 'Validated';
+        caseRecTestRec.ExpECM__Applied_Date__c = system.today();
+        insert caseRecTestRec;
+        System.debug('DBG:Case Record = ' + caseRecTestRec);
+
+
+        /* ********************************************************************
+                                CLIENT TEST DATA 2
+        ******************************************************************** */        
+        //
+        // Create Client Contact
+        //
+        contactRecTestRec.id = null;
+        contactRecTestRec.ExpECM__Due_Date__c = System.today();
+        insert contactRecTestRec;
+        System.debug('DBG2:Contact Info = ' + contactRecTestRec);
+
+        //
+        // Create Client Case Record
+        //      
+        caseRecTestRec.id = null;
+        caseRecTestRec.ExpECM__Main_Client__c = contactRecTestRec.id;
+        insert caseRecTestRec;
+        System.debug('DBG2:Case Record = ' + caseRecTestRec);
+
+
 
         /* ********************************************************************
                                 BEGIN TEST 1
@@ -98,7 +130,7 @@ private class commonMapComponentControllerTests {
                                                 BillingLatitude__c, 
                                                 BillingLongitude__c
                                         from    ExpECM__Job_Order__c 
-                                        where id = :jobOrder1.id];
+                                        where id = :jobOrderTestRec.id];
         System.debug('Job Order='+ jobOrder);
 
         String testResult = commonMapComponentController.getNearbyContacts(10, 
@@ -109,6 +141,7 @@ private class commonMapComponentControllerTests {
 
         System.debug(testResult);
 
+        // Make sure we found a matching record
         System.assert(testResult.length()> 0);
 
         /* ********************************************************************
@@ -118,7 +151,7 @@ private class commonMapComponentControllerTests {
                                                     Client_Mailing_Latitude__c, 
                                                     Client_Mailing_Longitude__c
                                             from    ExpECM__Case_Record__c 
-                                            where id = :caseRec1.id];
+                                            where id = :caseRecTestRec.id];
         System.debug('Case Record='+ caseRec);
 
         String testResult2 = commonMapComponentController.getNearbyJobOrders(10, 
@@ -129,6 +162,7 @@ private class commonMapComponentControllerTests {
 
         System.debug(testResult2);
 
+        // Make sure we found a matching record
         System.assert(testResult2.length()> 0);
 
     }
